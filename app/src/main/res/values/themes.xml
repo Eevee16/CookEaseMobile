@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.CookEase" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/orange_primary</item>
+        <item name="colorPrimaryDark">@color/orange_dark</item>
+        <item name="colorAccent">@color/orange_primary</item>
+        <item name="android:statusBarColor">@color/orange_primary</item>
+    </style>
+
+    <style name="Theme.CookEase" parent="Base.Theme.CookEase" />
+</resources>

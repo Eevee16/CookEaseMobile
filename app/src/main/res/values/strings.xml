@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CookEase</string>
+    <string name="search_hint">Search recipes...</string>
+    <string name="discover_recipes">Discover Recipes</string>
+    <string name="no_recipes_found">No recipes found</string>
+    <string name="add_recipe">Add Recipe</string>
+
+    <string name="search">Search</string>
+</resources>
