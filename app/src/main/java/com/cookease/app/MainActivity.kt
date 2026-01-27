@@ -1,8 +1,10 @@
 package com.cookease.app
 
+import AddFragment
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.cookease.app.ui.theme.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 // Note: We don't strictly need ViewBinding here since it's so simple,
 // but if you enabled it, you can use ActivityMainBinding.
