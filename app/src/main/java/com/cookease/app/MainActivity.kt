@@ -1,13 +1,11 @@
 package com.cookease.app
 
-import AddFragment
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.cookease.app.ui.theme.ProfileFragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-// Note: We don't strictly need ViewBinding here since it's so simple,
-// but if you enabled it, you can use ActivityMainBinding.
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,43 +13,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // 1. Find the Navigation Host (the container in your XML)
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        // 2. Setup Bottom Navigation
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
-        // Load Home Fragment by default
-        if (savedInstanceState == null) {
-            replaceFragment(HomeFragment())
-        }
+        // This single line replaces your entire 'when' block and 'replaceFragment' function!
+        bottomNav.setupWithNavController(navController)
 
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    replaceFragment(HomeFragment())
-                    true
-                }
-                R.id.nav_search -> {
-                    replaceFragment(SearchFragment())
-                    true
-                }
-                R.id.nav_add -> {
-                    replaceFragment(AddFragment())
-                    true
-                }
-                R.id.nav_saved -> {
-                    replaceFragment(SavedFragment())
-                    true
-                }
-                R.id.nav_profile -> {
-                    replaceFragment(ProfileFragment())
-                    true
-                }
-                else -> false
+        // 3. Handle Visibility for Login
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            // If the user is on the Login or Register screens, hide the bottom bar
+            if (destination.id == R.id.loginFragment) {
+                bottomNav.visibility = View.GONE
+            } else {
+                bottomNav.visibility = View.VISIBLE
             }
         }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.frame_container, fragment)
-            .commit()
     }
 }

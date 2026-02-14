@@ -1,4 +1,4 @@
-package com.cookease.app.ui.addrecipe
+package com.cookease.app.addrecipe
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -1,8 +1,9 @@
+package com.cookease.app.addrecipe
+
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.cookease.app.R
-import com.cookease.app.ui.addrecipe.RecipeStep1Fragment
 
 class AddFragment : Fragment(R.layout.fragment_add) {
 

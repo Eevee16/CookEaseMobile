@@ -1,126 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="#F5F5F5"
+    tools:context="com.cookease.app.profile.ProfileFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/profileCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:paddingTop="32dp"
-        android:paddingBottom="16dp">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:cardCornerRadius="50dp"
-            app:cardElevation="0dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="24dp">
 
-            <ImageView
-                android:id="@+id/ivProfile"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvProfileImage"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                app:cardCornerRadius="44dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/ivProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_gallery"
+                    tools:src="@android:drawable/ic_menu_gallery" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Kent Sison"
+                android:textColor="#333333"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cvProfileImage" />
+
+            <TextView
+                android:id="@+id/tvRank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="RANK: 3"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:letterSpacing="0.05"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvUsername" />
+
+            <TextView
+                android:id="@+id/tvStatCreated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="3 CREATED"
+                android:textColor="#333333"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/divider1"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvRank" />
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="1dp"
+                android:layout_height="12dp"
+                android:background="#DDDDDD"
+                android:layout_marginHorizontal="16dp"
+                app:layout_constraintBottom_toBottomOf="@id/tvStatCreated"
+                app:layout_constraintEnd_toStartOf="@+id/tvStatCooked"
+                app:layout_constraintStart_toEndOf="@id/tvStatCreated"
+                app:layout_constraintTop_toTopOf="@id/tvStatCreated" />
+
+            <TextView
+                android:id="@+id/tvStatCooked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12 COOKED"
+                android:textColor="#333333"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tvStatCreated"
+                app:layout_constraintEnd_toStartOf="@+id/divider2"
+                app:layout_constraintStart_toEndOf="@id/divider1"
+                app:layout_constraintTop_toTopOf="@id/tvStatCreated" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="1dp"
+                android:layout_height="12dp"
+                android:background="#DDDDDD"
+                android:layout_marginHorizontal="16dp"
+                app:layout_constraintBottom_toBottomOf="@id/tvStatCreated"
+                app:layout_constraintEnd_toStartOf="@+id/tvStatFollowers"
+                app:layout_constraintStart_toEndOf="@id/tvStatCooked"
+                app:layout_constraintTop_toTopOf="@id/tvStatCreated" />
+
+            <TextView
+                android:id="@+id/tvStatFollowers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 FOLLOWERS"
+                android:textColor="#333333"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tvStatCreated"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/divider2"
+                app:layout_constraintTop_toTopOf="@id/tvStatCreated" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayoutProfile"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_gallery"
-                tools:src="@android:drawable/ic_menu_gallery"/>
-        </androidx.cardview.widget.CardView>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@android:color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvStatCreated"
+                app:tabIndicatorColor="#FF6200"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="#FF6200"
+                app:tabTextColor="#999999"
+                app:tabRippleColor="#22FF6200">
 
-        <TextView
-            android:id="@+id/tvUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Kent Sison"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_marginTop="12dp"/>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Created" />
 
-        <TextView
-            android:id="@+id/tvRank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RANK: 3"
-            android:textSize="12sp"
-            android:textColor="#666666"
-            android:layout_marginTop="4dp"/>
-    </LinearLayout>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cooked" />
+            </com.google.android.material.tabs.TabLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingBottom="24dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3 CREATED"
-            android:textStyle="bold"
-            android:textSize="12sp"
-            android:textColor="#000000"/>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="16dp"
-            android:background="#000000"
-            android:layout_marginHorizontal="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="12 COOKED"
-            android:textStyle="bold"
-            android:textSize="12sp"
-            android:textColor="#000000"/>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="16dp"
-            android:background="#000000"
-            android:layout_marginHorizontal="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3 FOLLOWERS"
-            android:textStyle="bold"
-            android:textSize="12sp"
-            android:textColor="#000000"/>
-    </LinearLayout>
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayoutProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabIndicatorColor="#FF6200"
-        app:tabSelectedTextColor="#FF6200"
-        app:tabTextColor="#666666"
-        app:tabMode="fixed">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CREATED"/>
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="COOKED"/>
-    </com.google.android.material.tabs.TabLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvProfileRecipes"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="24dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profileCard"
         app:spanCount="2"
-        android:clipToPadding="false" />
+        tools:listitem="@android:layout/simple_list_item_1" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

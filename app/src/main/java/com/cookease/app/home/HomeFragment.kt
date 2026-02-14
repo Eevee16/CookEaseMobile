@@ -1,4 +1,4 @@
-package com.cookease.app
+package com.cookease.app.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,19 +7,37 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.cookease.app.databinding.FragmentHomeBinding // IMPORTANT: This is the new binding!
+import com.cookease.app.Recipe
+import com.cookease.app.RecipeAdapter
+import com.cookease.app.databinding.FragmentHomeBinding
 
+/**
+ * HomeFragment - Main screen displaying recipe grid
+ *
+ * TODO: API Integration Checklist
+ * 1. Add ViewModel and Repository dependencies
+ * 2. Replace loadSampleRecipes() with API calls
+ * 3. Add proper error handling
+ * 4. Implement pull-to-refresh
+ * 5. Add pagination/infinite scroll
+ */
 class HomeFragment : Fragment() {
 
+    // ==================== VIEW BINDING ====================
     private var _binding: FragmentHomeBinding? = null
-    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
+    // ==================== ADAPTER & DATA ====================
     private lateinit var recipeAdapter: RecipeAdapter
     private val recipes = mutableListOf<Recipe>()
 
+    // TODO: Add ViewModel here when integrating API
+    // private val viewModel: HomeViewModel by viewModels()
+
+    // ==================== LIFECYCLE METHODS ====================
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -28,52 +46,82 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // This is where your old "onCreate" logic goes now
-        setupUI()
-        loadSampleRecipes()
+        setupRecyclerView()
+        setupSearchBar()
+        loadRecipes()
+
+        // TODO: Observe ViewModel LiveData/StateFlow here
+        // observeRecipes()
+        // observeLoadingState()
+        // observeErrors()
     }
 
-    private fun setupUI() {
-        // Note: Toolbar support in Fragments is slightly different, removing it for now to avoid crashes
-        // or you can use (activity as AppCompatActivity).setSupportActionBar(...)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
+    // ==================== UI SETUP ====================
+    private fun setupRecyclerView() {
         recipeAdapter = RecipeAdapter(recipes) { recipe ->
             onRecipeClicked(recipe)
         }
 
         binding.recipesRecyclerView.apply {
-            // "this@MainActivity" changes to "requireContext()"
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = recipeAdapter
-        }
 
-        binding.fabAddRecipe.setOnClickListener {
-            Toast.makeText(requireContext(), "Add Recipe clicked!", Toast.LENGTH_SHORT).show()
+            // TODO: Add scroll listener for pagination when using API
+            // addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            //     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            //         // Implement load more logic
+            //     }
+            // })
         }
+    }
 
+    private fun setupSearchBar() {
         binding.searchButton.setOnClickListener {
             val query = binding.searchEditText.text.toString()
             if (query.isNotEmpty()) {
                 searchRecipes(query)
+            } else {
+                // Show all recipes if query is empty
+                recipeAdapter.updateRecipes(recipes)
+                showEmptyState(recipes.isEmpty())
             }
         }
+
+        // TODO: Add text watcher for real-time search when using API
+        // binding.searchEditText.addTextChangedListener { ... }
     }
 
+    // ==================== DATA LOADING ====================
+    private fun loadRecipes() {
+        // TODO: Replace this entire method with API call
+        // viewModel.fetchRecipes()
+        loadSampleRecipes()
+    }
+
+    /**
+     * TEMPORARY: Sample data loader
+     * DELETE THIS METHOD when API is integrated
+     */
     private fun loadSampleRecipes() {
         showLoading(true)
         recipes.clear()
 
-        // --- PASTE YOUR RECIPE LIST HERE ---
-        // I am hiding the list to save space, but paste your exact list logic here.
         recipes.addAll(
             listOf(
-                Recipe("1",
-                    "Chicken Adobo",
-                    "Classic Filipino chicken...",
-                    "https://...",
-                    4.8f,
-                    "Easy",
-                    "Filipino"),
+                Recipe(
+                    id = "1",
+                    title = "Chicken Adobo",
+                    description = "Classic Filipino chicken braised in soy sauce and vinegar",
+                    image = "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400",
+                    rating = 4.8f,
+                    difficulty = "Easy",
+                    cuisine = "Filipino"
+                ),
                 Recipe(
                     id = "2",
                     title = "Sinigang na Baboy",
@@ -247,25 +295,56 @@ class HomeFragment : Fragment() {
                 )
             )
         )
-        // -----------------------------------
 
         recipeAdapter.updateRecipes(recipes)
         showLoading(false)
         showEmptyState(recipes.isEmpty())
     }
 
+    // TODO: Add this method for API integration
+    // private fun observeRecipes() {
+    //     viewModel.recipes.observe(viewLifecycleOwner) { result ->
+    //         when (result) {
+    //             is Resource.Success -> {
+    //                 recipes.clear()
+    //                 recipes.addAll(result.data)
+    //                 recipeAdapter.updateRecipes(recipes)
+    //                 showLoading(false)
+    //                 showEmptyState(recipes.isEmpty())
+    //             }
+    //             is Resource.Error -> {
+    //                 showLoading(false)
+    //                 showError(result.message)
+    //             }
+    //             is Resource.Loading -> {
+    //                 showLoading(true)
+    //             }
+    //         }
+    //     }
+    // }
+
+    // ==================== USER INTERACTIONS ====================
     private fun onRecipeClicked(recipe: Recipe) {
+        // TODO: Navigate to recipe detail screen
         Toast.makeText(requireContext(), "Clicked: ${recipe.title}", Toast.LENGTH_SHORT).show()
+        // val action = HomeFragmentDirections.actionHomeToRecipeDetail(recipe.id)
+        // findNavController().navigate(action)
     }
 
     private fun searchRecipes(query: String) {
+        // TODO: When API is ready, call API search endpoint instead
+        // viewModel.searchRecipes(query)
+
         val filtered = recipes.filter {
-            it.title.contains(query, ignoreCase = true)
+            it.title.contains(query, ignoreCase = true) ||
+                    it.description.contains(query, ignoreCase = true) ||
+                    it.cuisine.contains(query, ignoreCase = true)
         }
         recipeAdapter.updateRecipes(filtered)
         showEmptyState(filtered.isEmpty())
     }
 
+    // ==================== UI STATE HELPERS ====================
     private fun showLoading(show: Boolean) {
         binding.loadingProgress.visibility = if (show) View.VISIBLE else View.GONE
         binding.recipesRecyclerView.visibility = if (show) View.GONE else View.VISIBLE
@@ -275,8 +354,16 @@ class HomeFragment : Fragment() {
         binding.emptyState.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null // Clear memory
-    }
+    // TODO: Add error handling method
+    // private fun showError(message: String?) {
+    //     Toast.makeText(
+    //         requireContext(),
+    //         message ?: "An error occurred",
+    //         Toast.LENGTH_LONG
+    //     ).show()
+    //     // Or show Snackbar for better UX
+    //     // Snackbar.make(binding.root, message ?: "An error occurred", Snackbar.LENGTH_LONG)
+    //     //     .setAction("Retry") { loadRecipes() }
+    //     //     .show()
+    // }
 }

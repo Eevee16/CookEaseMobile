@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/filter_cuisine" android:title="Cuisine" />
+    <item android:id="@+id/filter_ingredients" android:title="Ingredients" />
+    <item android:id="@+id/filter_difficulty" android:title="Difficulty" />
+    <item android:id="@+id/filter_meal" android:title="Meal Type (Breakfast, etc.)" />
+    <item android:id="@+id/filter_clear" android:title="Clear Filters" />
+</menu>

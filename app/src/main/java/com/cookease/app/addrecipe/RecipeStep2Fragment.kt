@@ -1,4 +1,4 @@
-package com.cookease.app.ui.addrecipe
+package com.cookease.app.addrecipe
 
 import android.net.Uri
 import android.os.Bundle
