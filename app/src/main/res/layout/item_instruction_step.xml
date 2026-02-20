@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginBottom="@dimen/spacing_xxlarge">
+
+    <!-- Step Number -->
+    <TextView
+        android:id="@+id/tvStepNumber"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_button_primary"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-black"
+        tools:text="1"/>
+
+    <!-- Step Content -->
+    <TextView
+        android:id="@+id/tvInstruction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/spacing_xlarge"
+        android:paddingTop="4dp"
+        android:textSize="17sp"
+        android:textColor="@color/gray_700"
+        android:lineSpacingMultiplier="1.8"
+        tools:text="In a large pan, heat oil over medium heat. Add chicken pieces and brown on all sides."/>
+</LinearLayout>

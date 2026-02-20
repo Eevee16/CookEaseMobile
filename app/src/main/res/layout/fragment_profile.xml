@@ -1,182 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
-    tools:context="com.cookease.app.profile.ProfileFragment">
+    android:background="@android:color/white">
 
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/profileCard"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="2dp"
-        app:strokeWidth="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- Profile Header -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="24dp">
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingTop="32dp"
+            android:paddingBottom="16dp"
+            android:background="@color/primary">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cvProfileImage"
-                android:layout_width="88dp"
-                android:layout_height="88dp"
-                app:cardCornerRadius="44dp"
-                app:cardElevation="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/ic_placeholder"/>
 
-                <ImageView
-                    android:id="@+id/ivProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@android:drawable/ic_menu_gallery"
-                    tools:src="@android:drawable/ic_menu_gallery" />
-            </androidx.cardview.widget.CardView>
-
+            <!-- Fixed: was tvName, now tvUserName -->
             <TextView
-                android:id="@+id/tvUsername"
+                android:id="@+id/tvUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Kent Sison"
-                android:textColor="#333333"
+                android:text="John Doe"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cvProfileImage" />
+                android:textColor="@android:color/white"
+                android:textStyle="bold"/>
 
+            <!-- Fixed: was tvEmail, now tvUserEmail -->
             <TextView
-                android:id="@+id/tvRank"
+                android:id="@+id/tvUserEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="RANK: 3"
-                android:textColor="#999999"
-                android:textSize="12sp"
-                android:letterSpacing="0.05"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvUsername" />
+                android:text="johndoe@example.com"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"/>
 
-            <TextView
-                android:id="@+id/tvStatCreated"
-                android:layout_width="wrap_content"
+        </LinearLayout>
+
+        <!-- Stats Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="3 CREATED"
-                android:textColor="#333333"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/divider1"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvRank" />
-
-            <View
-                android:id="@+id/divider1"
-                android:layout_width="1dp"
-                android:layout_height="12dp"
-                android:background="#DDDDDD"
-                android:layout_marginHorizontal="16dp"
-                app:layout_constraintBottom_toBottomOf="@id/tvStatCreated"
-                app:layout_constraintEnd_toStartOf="@+id/tvStatCooked"
-                app:layout_constraintStart_toEndOf="@id/tvStatCreated"
-                app:layout_constraintTop_toTopOf="@id/tvStatCreated" />
-
-            <TextView
-                android:id="@+id/tvStatCooked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="12 COOKED"
-                android:textColor="#333333"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/tvStatCreated"
-                app:layout_constraintEnd_toStartOf="@+id/divider2"
-                app:layout_constraintStart_toEndOf="@id/divider1"
-                app:layout_constraintTop_toTopOf="@id/tvStatCreated" />
-
-            <View
-                android:id="@+id/divider2"
-                android:layout_width="1dp"
-                android:layout_height="12dp"
-                android:background="#DDDDDD"
-                android:layout_marginHorizontal="16dp"
-                app:layout_constraintBottom_toBottomOf="@id/tvStatCreated"
-                app:layout_constraintEnd_toStartOf="@+id/tvStatFollowers"
-                app:layout_constraintStart_toEndOf="@id/tvStatCooked"
-                app:layout_constraintTop_toTopOf="@id/tvStatCreated" />
-
-            <TextView
-                android:id="@+id/tvStatFollowers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3 FOLLOWERS"
-                android:textColor="#333333"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/tvStatCreated"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/divider2"
-                app:layout_constraintTop_toTopOf="@id/tvStatCreated" />
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayoutProfile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@android:color/transparent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvStatCreated"
-                app:tabIndicatorColor="#FF6200"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="#FF6200"
-                app:tabTextColor="#999999"
-                app:tabRippleColor="#22FF6200">
-
-                <com.google.android.material.tabs.TabItem
+                android:layout_weight="1">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Created" />
-
-                <com.google.android.material.tabs.TabItem
+                    android:text="Total"
+                    android:textColor="@android:color/darker_gray"/>
+                <TextView
+                    android:id="@+id/tvTotalRecipes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cooked" />
-            </com.google.android.material.tabs.TabLayout>
+                    android:text="0"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Approved"
+                    android:textColor="@android:color/darker_gray"/>
+                <!-- Fixed: was tvApprovedCount, now tvApprovedRecipes -->
+                <TextView
+                    android:id="@+id/tvApprovedRecipes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvProfileRecipes"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:clipToPadding="false"
-        android:paddingHorizontal="12dp"
-        android:paddingBottom="24dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profileCard"
-        app:spanCount="2"
-        tools:listitem="@android:layout/simple_list_item_1" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pending"
+                    android:textColor="@android:color/darker_gray"/>
+                <!-- Fixed: was tvPendingCount, now tvPendingRecipes -->
+                <TextView
+                    android:id="@+id/tvPendingRecipes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rejected"
+                    android:textColor="@android:color/darker_gray"/>
+                <!-- Added: tvRejectedRecipes -->
+                <TextView
+                    android:id="@+id/tvRejectedRecipes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <!-- Added: btnEditProfile -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditProfile"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Edit Profile"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_marginEnd="8dp"/>
+
+            <!-- Added: btnLogout -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogout"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Logout"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Add New Recipe"/>
+
+        <!-- Empty State -->
+        <!-- Added: emptyState -->
+        <LinearLayout
+            android:id="@+id/emptyState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No recipes yet"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"/>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvUserRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"/>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

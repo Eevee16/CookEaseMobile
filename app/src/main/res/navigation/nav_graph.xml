@@ -7,43 +7,178 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.cookease.app.auth.LoginFragment"
+        android:name="com.cookease.app.ui.auth.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_login_to_home"
+            android:id="@+id/action_loginFragment_to_homeFragment"
             app:destination="@id/nav_home"
             app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_loginFragment_to_signupFragment"
+            app:destination="@id/signupFragment"/>
+        <action
+            android:id="@+id/action_loginFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.cookease.app.ui.auth.SignupFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_signup">
+        <action
+            android:id="@+id/action_signupFragment_to_homeFragment"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/signupFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_signupFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/signupFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.cookease.app.ui.auth.ResetPasswordFragment"
+        android:label="Reset Password"
+        tools:layout="@layout/fragment_reset_password">
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/resetPasswordFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_global_homeFragment"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
         android:id="@+id/nav_home"
         android:name="com.cookease.app.home.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_recipeDetail"
+            app:destination="@id/recipeDetailFragment"/>
+        <action
+            android:id="@+id/action_home_to_searchResults"
+            app:destination="@id/searchResultsFragment"/>
+        <action
+            android:id="@+id/action_home_to_searchCourseCuisine"
+            app:destination="@id/searchCourseCuisineFragment"/>
+        <action
+            android:id="@+id/action_home_to_searchIngredients"
+            app:destination="@id/searchIngredientsFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_search"
-        android:name="com.cookease.app.search.SearchFragment"
+        android:name="com.cookease.app.ui.search.SearchFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_search_to_searchResults"
+            app:destination="@id/searchResultsFragment"/>
+        <action
+            android:id="@+id/action_search_to_searchCourseCuisine"
+            app:destination="@id/searchCourseCuisineFragment"/>
+        <action
+            android:id="@+id/action_search_to_searchIngredients"
+            app:destination="@id/searchIngredientsFragment"/>
+    </fragment>
+
     <fragment
-        android:id="@+id/nav_add"
+        android:id="@+id/searchResultsFragment"
+        android:name="com.cookease.app.ui.search.SearchResultsFragment"
+        android:label="Search Results"
+        tools:layout="@layout/fragment_search_results">
+        <argument
+            android:name="query"
+            app:argType="string"
+            android:defaultValue=""/>
+        <action
+            android:id="@+id/action_searchResults_to_recipeDetail"
+            app:destination="@id/recipeDetailFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchCourseCuisineFragment"
+        android:name="com.cookease.app.ui.search.SearchCourseCuisineFragment"
+        android:label="Search by Category"
+        tools:layout="@layout/fragment_search_course_cuisine">
+        <action
+            android:id="@+id/action_searchCourseCuisine_to_recipeDetail"
+            app:destination="@id/recipeDetailFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchIngredientsFragment"
+        android:name="com.cookease.app.ui.search.SearchIngredientsFragment"
+        android:label="Search by Ingredients"
+        tools:layout="@layout/fragment_search_ingredients">
+        <action
+            android:id="@+id/action_searchIngredients_to_recipeDetail"
+            app:destination="@id/recipeDetailFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/recipeDetailFragment"
+        android:name="com.cookease.app.ui.recipe.RecipeDetailFragment"
+        android:label="Recipe Detail"
+        tools:layout="@layout/fragment_recipe_detail">
+        <argument
+            android:name="recipeId"
+            app:argType="string"/>
+        <action
+            android:id="@+id/action_recipeDetail_to_editRecipe"
+            app:destination="@id/editRecipeFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/editRecipeFragment"
         android:name="com.cookease.app.addrecipe.AddFragment"
-        android:label="Add"
-        tools:layout="@layout/fragment_add" />
+        android:label="Edit Recipe"
+        tools:layout="@layout/fragment_add">
+        <argument
+            android:name="recipeId"
+            app:argType="string"
+            android:defaultValue=""/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/moderatorDashboardFragment"
+        android:name="com.cookease.app.moderator.ModeratorDashboardFragment"
+        android:label="Moderator Dashboard"
+        tools:layout="@layout/fragment_moderator_dashboard"/>
 
     <fragment
         android:id="@+id/nav_saved"
         android:name="com.cookease.app.saved.SavedFragment"
         android:label="Saved"
-        tools:layout="@layout/fragment_saved" />
+        tools:layout="@layout/fragment_saved">
+        <action
+            android:id="@+id/action_saved_to_recipeDetail"
+            app:destination="@id/recipeDetailFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.cookease.app.profile.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profile_to_recipeDetail"
+            app:destination="@id/recipeDetailFragment"/>
+        <action
+            android:id="@+id/action_profile_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
 </navigation>

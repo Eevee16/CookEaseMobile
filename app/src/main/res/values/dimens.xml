@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">12dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="spacing_large">20dp</dimen>
+    <dimen name="spacing_xlarge">24dp</dimen>
+    <dimen name="spacing_xxlarge">32dp</dimen>
+    <dimen name="spacing_huge">40dp</dimen>
+    <dimen name="spacing_massive">48dp</dimen>
+
+    <!-- Radius -->
+    <dimen name="radius_small">6dp</dimen>
+    <dimen name="radius_medium">8dp</dimen>
+    <dimen name="radius_large">12dp</dimen>
+    <dimen name="radius_xlarge">15dp</dimen>
+
+    <!-- Input -->
+    <dimen name="input_height">44dp</dimen>
+    <dimen name="button_height">44dp</dimen>
+
+    <!-- Card -->
+    <dimen name="card_padding">40dp</dimen>
+    <dimen name="card_padding_small">24dp</dimen>
+
+    <!-- Text -->
+    <dimen name="text_tiny">12sp</dimen>
+    <dimen name="text_small">13sp</dimen>
+    <dimen name="text_normal">14sp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_large">18sp</dimen>
+    <dimen name="text_xlarge">24sp</dimen>
+    <dimen name="text_title">32sp</dimen>
+</resources>

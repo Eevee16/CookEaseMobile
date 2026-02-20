@@ -8,5 +8,6 @@ data class User(
     val recipesCreated: Int = 0,
     val recipesCooked: Int = 0,
     val followers: Int = 0,
-    val following: Int = 0
+    val following: Int = 0,
+    val photoUrl: String? = null
 )

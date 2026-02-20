@@ -1,10 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.CookEase" parent="Theme.Material3.Light.NoActionBar">
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CookEase" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/orange_primary</item>
-        <item name="colorPrimaryDark">@color/orange_dark</item>
-        <item name="colorAccent">@color/orange_primary</item>
-        <item name="android:statusBarColor">@color/orange_primary</item>
+        <item name="colorPrimaryVariant">@color/orange_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/purple_primary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:windowBackground">@color/background_secondary</item>
+        <item name="android:statusBarColor">@color/background_secondary</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
-
-    <style name="Theme.CookEase" parent="Base.Theme.CookEase" />
 </resources>

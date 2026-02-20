@@ -5,8 +5,9 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton // Added this import
+import android.widget.ImageButton
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.cookease.app.R
@@ -20,8 +21,7 @@ class RecipeStep1Fragment : Fragment(R.layout.fragment_add_step1) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. Bind Views
-        val ivBack = view.findViewById<ImageButton>(R.id.ivBack) // Updated to ImageButton
+        val ivBack = view.findViewById<ImageButton>(R.id.ivBack)
         val etName = view.findViewById<EditText>(R.id.etName)
         val spCuisine = view.findViewById<Spinner>(R.id.spCuisine)
         val spCategory = view.findViewById<Spinner>(R.id.spCategory)
@@ -29,56 +29,95 @@ class RecipeStep1Fragment : Fragment(R.layout.fragment_add_step1) {
         val etDescription = view.findViewById<EditText>(R.id.etDescription)
         val btnNext = view.findViewById<Button>(R.id.btnNextStep1)
 
-        // 2. Setup Dropdowns (Spinners)
         val cuisineList = listOf("Filipino", "Italian", "American", "Japanese", "Chinese")
-        val cuisineAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, cuisineList)
-        spCuisine.adapter = cuisineAdapter
+        spCuisine.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            cuisineList
+        )
 
         val categoryList = listOf("Breakfast", "Lunch", "Dinner", "Snack", "Dessert")
-        val categoryAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, categoryList)
-        spCategory.adapter = categoryAdapter
+        spCategory.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            categoryList
+        )
 
-        // 3. Restore Data (If coming back from Step 2)
         etName.setText(viewModel.recipeName.value)
         etDescription.setText(viewModel.description.value)
 
-        // Restore Spinner Selections
-        viewModel.cuisine.value?.let {
-            val pos = cuisineList.indexOf(it)
+        viewModel.cuisine.value?.let { saved ->
+            val pos = cuisineList.indexOf(saved)
             if (pos >= 0) spCuisine.setSelection(pos)
         }
-        viewModel.category.value?.let {
-            val pos = categoryList.indexOf(it)
+        viewModel.category.value?.let { saved ->
+            val pos = categoryList.indexOf(saved)
             if (pos >= 0) spCategory.setSelection(pos)
         }
+        viewModel.difficulty.value?.let { saved ->
+            when (saved) {
+                "Easy" -> toggleDifficulty.check(R.id.btnEasy)
+                "Medium" -> toggleDifficulty.check(R.id.btnMedium)
+                "Hard" -> toggleDifficulty.check(R.id.btnHard)
+            }
+        }
 
-        // 4. Handle Back Button
+        // Back — exit the add recipe flow entirely via the bottom nav
+        ivBack.setOnClickListener {
+            val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+            bottomNav.selectedItemId = R.id.nav_home
+            requireParentFragment().childFragmentManager.popBackStack(
+                null,
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+        }
 
-                ivBack.setOnClickListener {
-                    val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-                    bottomNav.selectedItemId = R.id.nav_home
-                    parentFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                }
+        val fm = requireParentFragment().childFragmentManager
 
-        // 5. Handle Next Button
         btnNext.setOnClickListener {
+            val name = etName.text.toString().trim()
+            val description = etDescription.text.toString().trim()
             val selectedDifficultyId = toggleDifficulty.checkedButtonId
-            val difficulty = when(selectedDifficultyId) {
+            val difficulty = when (selectedDifficultyId) {
                 R.id.btnEasy -> "Easy"
                 R.id.btnMedium -> "Medium"
                 R.id.btnHard -> "Hard"
-                else -> "Medium"
+                else -> ""
             }
 
-            // Save to ViewModel
-            viewModel.recipeName.value = etName.text.toString()
+            var hasError = false
+
+            if (name.isEmpty()) {
+                etName.error = "Recipe name is required"
+                hasError = true
+            } else if (name.length < 3) {
+                etName.error = "Recipe name must be at least 3 characters"
+                hasError = true
+            } else {
+                etName.error = null
+            }
+
+            if (description.isEmpty()) {
+                etDescription.error = "Description is required"
+                hasError = true
+            } else {
+                etDescription.error = null
+            }
+
+            if (difficulty.isEmpty()) {
+                Toast.makeText(requireContext(), "Please select a difficulty level", Toast.LENGTH_SHORT).show()
+                hasError = true
+            }
+
+            if (hasError) return@setOnClickListener
+
+            viewModel.recipeName.value = name
             viewModel.cuisine.value = spCuisine.selectedItem.toString()
             viewModel.category.value = spCategory.selectedItem.toString()
             viewModel.difficulty.value = difficulty
-            viewModel.description.value = etDescription.text.toString()
+            viewModel.description.value = description
 
-            // Navigate to Step 2
-            parentFragmentManager.beginTransaction()
+            fm.beginTransaction()
                 .replace(R.id.fragment_container, RecipeStep2Fragment())
                 .addToBackStack("Step1")
                 .commit()

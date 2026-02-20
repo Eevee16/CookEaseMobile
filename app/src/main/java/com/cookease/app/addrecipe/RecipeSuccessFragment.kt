@@ -1,4 +1,5 @@
 package com.cookease.app.addrecipe
+
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -14,15 +15,9 @@ class RecipeSuccessFragment : Fragment(R.layout.fragment_add_success) {
         val btnHome = view.findViewById<Button>(R.id.btnBackToHome)
 
         btnHome.setOnClickListener {
-            // 1. Find the Bottom Navigation View in the Parent Activity
             val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-
-            // 2. Programmatically "click" the Home icon
-            // (Make sure R.id.home matches the ID in your bottom_menu.xml)
             bottomNav.selectedItemId = R.id.nav_home
-
-            // Optional: Reset the AddFragment so if they come back, it starts at Step 1
-            // parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            parentFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
 }

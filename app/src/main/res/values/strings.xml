@@ -1,9 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CookEase</string>
-    <string name="search_hint">Search recipes...</string>
-    <string name="discover_recipes">Discover Recipes</string>
-    <string name="no_recipes_found">No recipes found</string>
-    <string name="add_recipe">Add Recipe</string>
 
-    <string name="search">Search</string>
+    <!-- App -->
+    <string name="app_name">CookEase</string>
+
+    <!-- Login -->
+    <string name="login_subtitle">Welcome back!</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login">Log In</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="logging_in">Logging in…</string>
+
+    <!-- Forgot Password -->
+    <string name="reset_password_title">Reset Password</string>
+    <string name="reset_password_message">
+        Enter your email to receive a reset link
+    </string>
+    <string name="send_reset_link">Send Link</string>
+    <string name="cancel">Cancel</string>
+    <string name="sending">Sending…</string>
+
+    <!-- Home -->
+    <string name="discover_recipes">Discover\nRecipes</string>
+    <string name="find_and_share">Find and share amazing dishes</string>
+    <string name="search_hint">Search recipes…</string>
+    <string name="no_recipes_found">No Recipes Found</string>
+
+    <!-- Recipe -->
+    <string name="recipe_image">Recipe Image</string>
+    <string name="recipe_submitted">Recipe Submitted!</string>
+    <string name="recipe_under_review">
+        Your recipe is under review.\nWe\'ll notify you once it\'s approved.
+    </string>
+    <string name="back_to_home">Back to Home</string>
+
+    <!-- Add Recipe -->
+    <string name="add_new_recipe">Add New Recipe</string>
+    <string name="recipe_title">Recipe Title</string>
+    <string name="cuisine">Cuisine</string>
+    <string name="category">Category</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="servings">Servings</string>
+    <string name="prep_time_min">Prep Time (min)</string>
+    <string name="cook_time_min">Cook Time (min)</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="submit_recipe">Submit Recipe</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="instructions">Instructions</string>
+
+    <!-- Recipe Details -->
+    <string name="share">Share</string>
+    <string name="print">Print</string>
+    <string name="what_you_need">What You Need</string>
+    <string name="reset">Reset</string>
+    <string name="how_to_make">How To Make</string>
+
+    <!-- Profile -->
+    <string name="profile">Profile</string>
+    <string name="profile_photo">Profile Photo</string>
+    <string name="statistics">Statistics</string>
+    <string name="total_recipes">Total Recipes</string>
+    <string name="approved">Approved</string>
+    <string name="pending">Pending</string>
+    <string name="rejected">Rejected</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="instruction_hint">Enter instruction step</string>
+    <string name="sign_out">Sign Out</string>
+
+    <!-- Ingredient Editor -->
+    <string name="ingredient_hint">Enter ingredient</string>
+    <string name="remove">Remove</string>
+
+    <!-- Common -->
+    <string name="loading">Loading…</string>
+
+    <string name="supabase_url">https://nrorypixaucxuoculxta.supabase.co</string>
+    <string name="supabase_anon_key">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yb3J5cGl4YXVjeHVvY3VseHRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0ODgxOTcsImV4cCI6MjA4NTA2NDE5N30.BW-Nh1AX2vqdg8OdsVEenl3f4eJ1s3iQC4C64pIC7z8</string>
 </resources>

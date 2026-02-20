@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ====================== -->
+    <!-- Text Appearances       -->
+    <!-- ====================== -->
+
+    <style name="TextAppearance.Logo" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/orange_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="TextAppearance.Subtitle" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/gray_600</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.Error" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textColor">@color/error</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.Link" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/purple_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Label" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textColor">@color/gray_700</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Required by TabLayout in fragment_recipe_detail.xml -->
+    <style name="TextAppearance.Tab" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- ====================== -->
+    <!-- Buttons                -->
+    <!-- ====================== -->
+
+    <style name="Widget.CookEase.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/purple_primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="cornerRadius">@dimen/radius_medium</item>
+    </style>
+
+    <style name="Widget.CookEase.Button.Orange" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/orange_primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="cornerRadius">10dp</item>
+    </style>
+
+    <style name="Widget.CookEase.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/purple_primary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- ========================= -->
+    <!-- TextInputLayout           -->
+    <!-- FIX: boxStrokeColor must  -->
+    <!-- use a plain color here,   -->
+    <!-- NOT a color selector ref  -->
+    <!-- ========================= -->
+
+    <style name="Widget.CookEase.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeColor">@color/purple_primary</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxCornerRadiusTopStart">@dimen/radius_medium</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_medium</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_medium</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_medium</item>
+        <item name="android:textColorHint">@color/gray_500</item>
+    </style>
+
+    <style name="Widget.CookEase.TextInputEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+</resources>

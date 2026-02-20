@@ -19,7 +19,7 @@ class RecipeStep2Fragment : Fragment(R.layout.fragment_add_step2) {
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             ivRecipeImage.setImageURI(it)
-            ivRecipeImage.setPadding(0,0,0,0)
+            ivRecipeImage.setPadding(0, 0, 0, 0)
             viewModel.imageUri.value = it.toString()
         }
     }
@@ -34,28 +34,32 @@ class RecipeStep2Fragment : Fragment(R.layout.fragment_add_step2) {
         val btnBack = view.findViewById<Button>(R.id.btnBackStep2)
         val btnNext = view.findViewById<Button>(R.id.btnNextStep2)
 
-        // Restore Data
         etPrepTime.setText(viewModel.prepTime.value)
         etCookTime.setText(viewModel.cookTime.value)
         etServings.setText(viewModel.servings.value)
-        if (viewModel.imageUri.value != null) {
-            ivRecipeImage.setImageURI(Uri.parse(viewModel.imageUri.value))
-            ivRecipeImage.setPadding(0,0,0,0)
+        viewModel.imageUri.value?.let {
+            ivRecipeImage.setImageURI(Uri.parse(it))
+            ivRecipeImage.setPadding(0, 0, 0, 0)
         }
 
-        // Image Click
         ivRecipeImage.setOnClickListener { pickImageLauncher.launch("image/*") }
 
-        // Back Button (Bottom only)
-        btnBack.setOnClickListener { parentFragmentManager.popBackStack() }
+        val fm = requireParentFragment().childFragmentManager
 
-        // Next Button
+        btnBack.setOnClickListener {
+            fm.popBackStack()
+        }
+
         btnNext.setOnClickListener {
             viewModel.prepTime.value = etPrepTime.text.toString()
             viewModel.cookTime.value = etCookTime.text.toString()
             viewModel.servings.value = etServings.text.toString()
 
-            parentFragmentManager.beginTransaction()
+            if (!viewModel.validateStep2()) {
+                return@setOnClickListener
+            }
+
+            fm.beginTransaction()
                 .replace(R.id.fragment_container, RecipeStep3Fragment())
                 .addToBackStack("Step2")
                 .commit()
