@@ -1,5 +1,6 @@
 package com.cookease.app.ui.auth
 
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Patterns
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -29,6 +31,10 @@ class SignupFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var profileImageUri: Uri? = null
+    private var passwordStrength = 0
+
+    // Letters, spaces, and only . , - ' allowed. Must start with a letter.
+    private val nameRegex = Regex("^[a-zA-Z][a-zA-Z .,\\-']*$")
 
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
@@ -49,67 +55,169 @@ class SignupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupListeners()
+    }
 
+    private fun setupListeners() {
+        // Profile image upload
         binding.btnUploadProfileImage.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
 
+        // Password strength indicator (matching web behavior)
+        binding.etPassword.addTextChangedListener { text ->
+            val password = text?.toString() ?: ""
+            if (password.isNotEmpty()) {
+                passwordStrength = calculatePasswordStrength(password)
+                updatePasswordStrengthUI(passwordStrength)
+                binding.passwordStrengthContainer.visibility = View.VISIBLE
+            } else {
+                binding.passwordStrengthContainer.visibility = View.GONE
+                passwordStrength = 0
+            }
+        }
+
+        // Confirm password matching check
+        binding.etConfirmPassword.addTextChangedListener { text ->
+            val password = binding.etPassword.text?.toString() ?: ""
+            val confirm = text?.toString() ?: ""
+            // Show mismatch indicator if needed (optional visual feedback)
+        }
+
+        // Submit button
         binding.btnSubmit.setOnClickListener {
             handleSignup()
         }
 
+        // Login link
         binding.tvLoginLink.setOnClickListener {
             findNavController().navigate(R.id.action_signupFragment_to_loginFragment)
         }
     }
 
+    /**
+     * Calculate password strength (0-6 scale) - matches web implementation
+     */
+    private fun calculatePasswordStrength(password: String): Int {
+        var score = 0
+        if (password.length >= 6) score++
+        if (password.length >= 8) score++
+        if (password.contains(Regex("[A-Z]"))) score++  // Uppercase
+        if (password.contains(Regex("[a-z]"))) score++  // Lowercase
+        if (password.contains(Regex("\\d"))) score++     // Digit
+        if (password.contains(Regex("[@$!%*?&]"))) score++  // Special char
+        return score
+    }
+
+    /**
+     * Get strength label - matches web: Weak, Medium, Strong
+     */
+    private fun getStrengthLabel(score: Int): String = when {
+        score <= 2 -> "Weak"
+        score <= 4 -> "Medium"
+        else -> "Strong"
+    }
+
+    /**
+     * Update password strength visual indicator
+     */
+    private fun updatePasswordStrengthUI(score: Int) {
+        val label = getStrengthLabel(score)
+        val (color, barWidth) = when {
+            score <= 2 -> Pair(Color.parseColor("#EF4444"), 0.33f) // Red/Weak
+            score <= 4 -> Pair(Color.parseColor("#F59E0B"), 0.66f) // Orange/Medium
+            else -> Pair(Color.parseColor("#10B981"), 1.0f)        // Green/Strong
+        }
+
+        binding.tvPasswordStrengthLabel.text = "Password strength: $label"
+        binding.tvPasswordStrengthLabel.setTextColor(color)
+
+        // Animate strength bar width
+        val strengthBar = binding.strengthBar
+        val params = strengthBar.layoutParams
+        params.width = (strengthBar.parent as View).width.times(barWidth).toInt()
+        strengthBar.layoutParams = params
+        strengthBar.setBackgroundColor(color)
+    }
+
     private fun handleSignup() {
         val firstName = binding.etFirstName.text.toString().trim()
-        val lastName = binding.etLastName.text.toString().trim()
-        val email = binding.etEmail.text.toString().trim()
-        val password = binding.etPassword.text.toString()
-        val confirmPassword = binding.etConfirmPassword.text.toString()
+        val lastName  = binding.etLastName.text.toString().trim()
+        val email     = binding.etEmail.text.toString().trim()
+        val password  = binding.etPassword.text.toString()
+        val confirm   = binding.etConfirmPassword.text.toString()
 
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() ||
-            password.isEmpty() || confirmPassword.isEmpty()) {
-            showError("Please fill all fields.")
+        // Clear previous error
+        hideError()
+
+        // ── Empty fields ─────────────────────────────────────────────
+        if (firstName.isEmpty()) { showError("Please enter your first name."); return }
+        if (lastName.isEmpty())  { showError("Please enter your last name."); return }
+        if (email.isEmpty())     { showError("Please enter your email address."); return }
+        if (password.isEmpty())  { showError("Please enter a password."); return }
+        if (confirm.isEmpty())   { showError("Please confirm your password."); return }
+
+        // ── First name ────────────────────────────────────────────────
+        if (firstName.length < 2) {
+            showError("First name is too short — needs at least 2 characters.")
+            return
+        }
+        if (!nameRegex.matches(firstName)) {
+            showError("First name can only have letters. Allowed symbols: . , - '")
             return
         }
 
-        if (firstName.length < 2 || lastName.length < 2) {
-            showError("First and Last name must be at least 2 characters.")
+        // ── Last name ─────────────────────────────────────────────────
+        if (lastName.length < 2) {
+            showError("Last name is too short — needs at least 2 characters.")
+            return
+        }
+        if (!nameRegex.matches(lastName)) {
+            showError("Last name can only have letters. Allowed symbols: . , - '")
             return
         }
 
+        // ── Email ─────────────────────────────────────────────────────
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            showError("Invalid email address.")
+            showError("That email doesn't look right. Please double-check it.")
             return
         }
 
+        // ── Password rules (matching web) ─────────────────────────────
         if (password.length < 6) {
-            showError("Password must be at least 6 characters.")
+            showError("Password must be at least 6 characters long.")
             return
         }
 
-        if (!password.contains(Regex("[A-Z]")) ||
-            !password.contains(Regex("[a-z]")) ||
-            !password.contains(Regex("[0-9]"))) {
-            showError("Password must include uppercase, lowercase, and a number.")
+        // Check for uppercase, lowercase, and number (matching web validation)
+        if (!password.contains(Regex("[A-Z]"))) {
+            showError("Password must include at least one uppercase letter.")
+            return
+        }
+        if (!password.contains(Regex("[a-z]"))) {
+            showError("Password must include at least one lowercase letter.")
+            return
+        }
+        if (!password.contains(Regex("\\d"))) {
+            showError("Password must include at least one number.")
             return
         }
 
-        if (password != confirmPassword) {
+        // ── Confirm password ──────────────────────────────────────────
+        if (password != confirm) {
             showError("Passwords do not match.")
             return
         }
 
-        hideError()
+        // ── All good, submit ──────────────────────────────────────────
         binding.btnSubmit.isEnabled = false
         binding.btnSubmit.text = "Creating Account..."
 
         lifecycleScope.launch {
             try {
                 val client = SupabaseClientProvider.client
+
+                // 1. Create auth account with metadata (matching web)
                 client.auth.signUpWith(Email) {
                     this.email = email
                     this.password = password
@@ -121,6 +229,23 @@ class SignupFragment : Fragment() {
 
                 val userId = client.auth.currentUserOrNull()?.id
 
+                // 2. Save profile data to profiles table
+                if (userId != null) {
+                    try {
+                        client.postgrest.from("profiles").upsert(
+                            buildJsonObject {
+                                put("id", userId)
+                                put("email", email)
+                                put("first_name", firstName)
+                                put("last_name", lastName)
+                            }
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+                // 3. Upload profile photo if selected (matching web)
                 if (profileImageUri != null && userId != null) {
                     try {
                         val contentResolver = requireContext().contentResolver
@@ -128,9 +253,11 @@ class SignupFragment : Fragment() {
                         val ext = mimeType.substringAfter("/")
                         val filePath = "$userId/avatar.$ext"
                         val bytes = contentResolver.openInputStream(profileImageUri!!)?.readBytes()
+
                         if (bytes != null) {
                             client.storage.from("avatars").upload(filePath, bytes, upsert = true)
                             val publicUrl = client.storage.from("avatars").publicUrl(filePath)
+
                             client.postgrest.from("profiles").update({
                                 set("photo_url", publicUrl)
                             }) {
@@ -142,17 +269,28 @@ class SignupFragment : Fragment() {
                     }
                 }
 
-                Snackbar.make(binding.root, "Account created! Check your email to confirm.", Snackbar.LENGTH_LONG).show()
+                // Show success message (matching web)
+                Snackbar.make(
+                    binding.root,
+                    "Account created! Check your email to confirm.",
+                    Snackbar.LENGTH_LONG
+                ).show()
+
+                // Navigate to login
                 findNavController().navigate(R.id.action_signupFragment_to_loginFragment)
 
             } catch (e: Exception) {
-                val msg = e.message ?: "Signup failed."
+                val msg = e.message ?: ""
                 when {
                     msg.contains("rate limit", ignoreCase = true) ->
-                        showError("Too many attempts. Please wait a minute and try again.")
-                    msg.contains("already registered", ignoreCase = true) ->
-                        showError("An account with this email already exists.")
-                    else -> showError("Signup failed. Please try again.")
+                        showError("Too many signup attempts. Please wait a minute and try again.")
+                    msg.contains("already registered", ignoreCase = true) ||
+                            msg.contains("User already registered", ignoreCase = true) ->
+                        showError("This email is already registered. Try logging in instead.")
+                    msg.contains("invalid email", ignoreCase = true) ->
+                        showError("Invalid email address.")
+                    else ->
+                        showError("Signup failed: $msg")
                 }
             } finally {
                 binding.btnSubmit.isEnabled = true

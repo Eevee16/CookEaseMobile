@@ -53,13 +53,6 @@ class LoginFragment : Fragment() {
         binding.etPassword.addTextChangedListener {
             binding.cardError.visibility = View.GONE
             binding.tilPassword.error = null
-            val text = it.toString()
-            if (text.isNotEmpty()) {
-                binding.tvPasswordStrength.visibility = View.VISIBLE
-                updatePasswordStrength(text)
-            } else {
-                binding.tvPasswordStrength.visibility = View.GONE
-            }
         }
 
         binding.btnLogin.setOnClickListener {
@@ -210,28 +203,6 @@ class LoginFragment : Fragment() {
 
     private fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    private fun updatePasswordStrength(password: String) {
-        val strength = calculatePasswordStrength(password)
-        val (label, color) = when {
-            strength <= 2 -> Pair("Weak", R.color.error)
-            strength <= 4 -> Pair("Medium", R.color.warning)
-            else -> Pair("Strong", R.color.success)
-        }
-        binding.tvPasswordStrength.text = "Password strength: $label"
-        binding.tvPasswordStrength.setTextColor(resources.getColor(color, null))
-    }
-
-    private fun calculatePasswordStrength(password: String): Int {
-        var strength = 0
-        if (password.length >= 6) strength++
-        if (password.length >= 8) strength++
-        if (password.contains(Regex("[A-Z]"))) strength++
-        if (password.contains(Regex("[a-z]"))) strength++
-        if (password.contains(Regex("[0-9]"))) strength++
-        if (password.contains(Regex("[@$!%*?&]"))) strength++
-        return strength
     }
 
     override fun onDestroyView() {

@@ -2,60 +2,91 @@ package com.cookease.app
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.decodeFromJsonElement
 
 @Parcelize
 @Serializable
 data class Recipe(
-    val id: String = "",  // UUID
+    val id: String = "",
     val title: String = "",
     val description: String? = null,
-
     @SerialName("image_url")
-    val imageUrl: String? = null,  // image_url (text)
-
-    val image: String? = null,  // Optional image
-
-    val rating: Int? = null,  // Rating can be an int based on your table definition
-
-    val difficulty: String? = "Medium",  // Default value set to "Medium"
+    val imageUrl: String? = null,
+    val image: String? = null,
+    val rating: Double? = null,
+    val difficulty: String? = "Medium",
     val cuisine: String? = null,
     val category: String? = null,
-
-    @SerialName("views")  // The views column from the database
-    val views: Int? = null,  // Integer views
-
-    @SerialName("view_count")
-    val viewCount: Int? = null,  // view_count (int4)
-
-    val ingredients: String? = null,
-    val instructions: String? = null,
-
-    @SerialName("created_at")
-    val createdAt: String? = null,  // created_at (timestamp)
-
-    val status: String? = null,  // status (text)
-
-    @SerialName("owner_name")
-    val ownerName: String? = null,  // owner_name (text)
-
-    @SerialName("owner_id")
-    val ownerId: String? = null,  // owner_id (UUID)
-
-    @SerialName("rejection_reason")
-    val rejectionReason: String? = null,  // rejection_reason (text)
-
-    val servings: Int? = null,  // servings (int2)
-
+    val servings: Int? = null,
     @SerialName("prepTime")
-    val prepTime: Int? = null,  // prepTime (int2)
-
+    val prepTime: Int? = null,
     @SerialName("cookTime")
-    val cookTime: Int? = null,  // cookTime (int2)
+    val cookTime: Int? = null,
+    val notes: String? = null,
+    val slug: String = "",
 
-    val notes: String? = null,  // notes (text)
+    @Serializable(with = FlexibleStringListSerializer::class)
+    val ingredients: List<String> = emptyList(),
+    @Serializable(with = FlexibleStringListSerializer::class)
+    val instructions: List<String> = emptyList(),
 
-    @SerialName("slug")
-    val slug: String = ""  // slug (text)
+    @SerialName("views")
+    val views: Int? = null,
+    @SerialName("view_count")
+    val viewCount: Int? = null,
+    @SerialName("owner_id")
+    val ownerId: String? = null,
+    @SerialName("owner_name")
+    val ownerName: String? = null,
+    val status: String? = null,
+    @SerialName("rejection_reason")
+    val rejectionReason: String? = null,
+    @SerialName("created_at")
+    val createdAt: String? = null,
+    @SerialName("updated_at")
+    val updatedAt: String? = null
 ) : Parcelable
+
+object FlexibleStringListSerializer : KSerializer<List<String>> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("FlexibleStringList")
+
+    override fun deserialize(decoder: Decoder): List<String> {
+        val input = (decoder as? JsonDecoder)?.decodeJsonElement() ?: return emptyList()
+        
+        return when (input) {
+            is JsonArray -> {
+                input.map { (it as? JsonPrimitive)?.content ?: it.toString() }
+            }
+            is JsonPrimitive -> {
+                val content = input.content
+                if (content.startsWith("[") && content.endsWith("]")) {
+                    try {
+                        Json.decodeFromString<List<String>>(content)
+                    } catch (e: Exception) {
+                        listOf(content)
+                    }
+                } else if (content.isBlank()) {
+                    emptyList()
+                } else {
+                    listOf(content)
+                }
+            }
+            else -> emptyList()
+        }
+    }
+
+    override fun serialize(encoder: Encoder, value: List<String>) {
+        encoder.encodeSerializableValue(JsonArray.serializer(), JsonArray(value.map { JsonPrimitive(it) }))
+    }
+}

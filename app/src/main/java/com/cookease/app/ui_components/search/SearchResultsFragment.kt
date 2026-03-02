@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cookease.app.databinding.FragmentSearchResultsBinding
-import com.cookease.app.ui.recipe.RecipeAdapter
+import com.cookease.app.ui_components.recipe.RecipeAdapter
 
 class SearchResultsFragment : Fragment() {
 

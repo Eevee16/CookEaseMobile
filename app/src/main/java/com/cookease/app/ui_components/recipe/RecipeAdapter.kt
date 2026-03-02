@@ -1,7 +1,8 @@
-package com.cookease.app.ui.recipe
+package com.cookease.app.ui_components.recipe
 
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,38 +13,42 @@ import com.cookease.app.Recipe
 import com.cookease.app.databinding.ItemRecipeCardBinding
 
 class RecipeAdapter(
-    private val onClick: (Recipe) -> Unit
+    private val onRecipeClick: (Recipe) -> Unit = {},
+    private val onRemoveClick: ((Recipe) -> Unit)? = null
 ) : ListAdapter<Recipe, RecipeAdapter.VH>(DiffCallback()) {
 
-    inner class VH(val binding: ItemRecipeCardBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class VH(val binding: ItemRecipeCardBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         VH(ItemRecipeCardBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val recipe = getItem(position)
+
         holder.binding.tvRecipeTitle.text = recipe.title
         holder.binding.tvCategory.text = recipe.category ?: ""
         holder.binding.tvCuisine.text = recipe.cuisine ?: ""
 
-        // Difficulty tag with color
+        // Difficulty
         val difficulty = recipe.difficulty ?: "Medium"
         holder.binding.tvDifficulty.text = difficulty
         val (bgColor, textColor) = when (difficulty.lowercase()) {
-            "easy" -> Pair("#D1FAE5", "#065F46")      // green
-            "medium" -> Pair("#FEF3C7", "#92400E")    // yellow
-            "hard" -> Pair("#FEE2E2", "#991B1B")      // red
-            else -> Pair("#E5E7EB", "#374151")         // gray
+            "easy" -> Pair("#D1FAE5", "#065F46")
+            "medium" -> Pair("#FEF3C7", "#92400E")
+            "hard" -> Pair("#FEE2E2", "#991B1B")
+            else -> Pair("#E5E7EB", "#374151")
         }
         holder.binding.tvDifficulty.setBackgroundColor(Color.parseColor(bgColor))
         holder.binding.tvDifficulty.setTextColor(Color.parseColor(textColor))
 
-        // Safe handling of nullable rating
-        if (recipe.rating?.compareTo(0f) == 1) {  // safe check for rating > 0
-            holder.binding.tvRating.text = String.format("★ %.1f", recipe.rating ?: 0f)
-            holder.binding.tvRating.visibility = android.view.View.VISIBLE
+        // Rating
+        if (recipe.rating != null && recipe.rating > 0) {
+            holder.binding.tvRating.text =
+                String.format("★ %.1f", recipe.rating.toFloat())
+            holder.binding.tvRating.visibility = View.VISIBLE
         } else {
-            holder.binding.tvRating.visibility = android.view.View.GONE
+            holder.binding.tvRating.visibility = View.GONE
         }
 
         Glide.with(holder.itemView.context)
@@ -53,11 +58,25 @@ class RecipeAdapter(
             .centerCrop()
             .into(holder.binding.imgRecipe)
 
-        holder.itemView.setOnClickListener { onClick(recipe) }
+        // Normal click
+        holder.itemView.setOnClickListener {
+            onRecipeClick(recipe)
+        }
+
+        // Optional long press to remove (used in Saved screen)
+        if (onRemoveClick != null) {
+            holder.itemView.setOnLongClickListener {
+                onRemoveClick.invoke(recipe)
+                true
+            }
+        }
     }
 
     class DiffCallback : DiffUtil.ItemCallback<Recipe>() {
-        override fun areItemsTheSame(old: Recipe, new: Recipe) = old.id == new.id
-        override fun areContentsTheSame(old: Recipe, new: Recipe) = old == new
+        override fun areItemsTheSame(old: Recipe, new: Recipe) =
+            old.id == new.id
+
+        override fun areContentsTheSame(old: Recipe, new: Recipe) =
+            old == new
     }
 }

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cookease.app.Resource
-import com.cookease.app.SupabaseClient
+import com.cookease.app.SupabaseClientProvider
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,12 +57,12 @@ class AuthViewModel : ViewModel() {
             try {
                 _authState.value = AuthState.Loading
 
-                SupabaseClient.client.auth.signInWith(Email) {
+                SupabaseClientProvider.client.auth.signInWith(Email) {
                     this.email = email
                     this.password = password
                 }
 
-                val session = SupabaseClient.client.auth.currentSessionOrNull()
+                val session = SupabaseClientProvider.client.auth.currentSessionOrNull()
                 val userId = session?.user?.id ?: ""
                 val userEmail = session?.user?.email ?: email
 
@@ -97,7 +97,7 @@ class AuthViewModel : ViewModel() {
             try {
                 _registerResult.value = Resource.Loading()
 
-                SupabaseClient.client.auth.signUpWith(Email) {
+                SupabaseClientProvider.client.auth.signUpWith(Email) {
                     this.email = email
                     this.password = password
                 }
@@ -112,7 +112,8 @@ class AuthViewModel : ViewModel() {
                 _registerResult.value = Resource.Success(user)
 
             } catch (e: Exception) {
-                _registerResult.value = Resource.Error("Registration failed: ${e.message}")
+                _registerResult.value =
+                    Resource.Error("Registration failed: ${e.message}")
             }
         }
     }
@@ -122,10 +123,8 @@ class AuthViewModel : ViewModel() {
     fun sendPasswordReset(email: String) {
         viewModelScope.launch {
             try {
-                SupabaseClient.client.auth.resetPasswordForEmail(email)
-            } catch (e: Exception) {
-                // Error handled silently — dialog already shown
-            }
+                SupabaseClientProvider.client.auth.resetPasswordForEmail(email)
+            } catch (_: Exception) { }
         }
     }
 
@@ -136,9 +135,10 @@ class AuthViewModel : ViewModel() {
     private fun checkLoginStatus() {
         viewModelScope.launch {
             try {
-                val session = SupabaseClient.client.auth.currentSessionOrNull()
+                val session =
+                    SupabaseClientProvider.client.auth.currentSessionOrNull()
                 _isLoggedIn.value = session != null
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _isLoggedIn.value = false
             }
         }
@@ -147,21 +147,22 @@ class AuthViewModel : ViewModel() {
     fun logout() {
         viewModelScope.launch {
             try {
-                SupabaseClient.client.auth.signOut()
-                _authState.value = AuthState.Idle
-                _isLoggedIn.value = false
-            } catch (e: Exception) {
-                _authState.value = AuthState.Idle
-                _isLoggedIn.value = false
-            }
+                SupabaseClientProvider.client.auth.signOut()
+            } catch (_: Exception) { }
+
+            _authState.value = AuthState.Idle
+            _isLoggedIn.value = false
         }
     }
 
     fun getCurrentUser(): LiveData<AuthUser?> {
         val result = MutableLiveData<AuthUser?>()
+
         viewModelScope.launch {
             try {
-                val session = SupabaseClient.client.auth.currentSessionOrNull()
+                val session =
+                    SupabaseClientProvider.client.auth.currentSessionOrNull()
+
                 result.value = session?.user?.let {
                     AuthUser(
                         id = it.id,
@@ -170,10 +171,11 @@ class AuthViewModel : ViewModel() {
                         token = session.accessToken
                     )
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 result.value = null
             }
         }
+
         return result
     }
 

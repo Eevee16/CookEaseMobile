@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.cookease.app.databinding.FragmentSearchIngredientsBinding
-import com.cookease.app.ui.recipe.RecipeAdapter
-
+import com.cookease.app.ui_components.recipe.RecipeAdapter
 class SearchIngredientsFragment : Fragment() {
 
     private var _binding: FragmentSearchIngredientsBinding? = null

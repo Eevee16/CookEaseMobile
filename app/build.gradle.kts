@@ -6,7 +6,6 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
     id("org.jetbrains.kotlin.plugin.serialization")
-
 }
 
 android {
@@ -46,11 +45,11 @@ android {
         compose = true
         viewBinding = true
     }
-
-
 }
 
 dependencies {
+    implementation("io.coil-kt:coil:2.6.0")
+
     // Core Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -80,7 +79,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
-    // Navigation  ← add these two
+    // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
@@ -95,18 +94,16 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.7.1")
+    implementation("androidx.room:room-ktx:2.7.1")
+    ksp("androidx.room:room-compiler:2.7.1")
 
     // Supabase
     implementation("io.github.jan-tennert.supabase:postgrest-kt:2.1.0")
-    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.1.0")  // ← this covers 'auth'
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.1.0")
     implementation("io.github.jan-tennert.supabase:storage-kt:2.1.0")
     implementation("io.ktor:ktor-client-android:2.3.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-
-    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     // Testing
     testImplementation(libs.junit)

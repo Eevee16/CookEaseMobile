@@ -58,7 +58,7 @@ class SearchIngredientsViewModel(private val supabase: io.github.jan.supabase.Su
             "ground", "fresh", "dried", "cooked", "peeled", "trimmed")
 
         recipes.forEach { recipe ->
-            recipe.ingredients?.split(",", "\n")?.forEach { ing ->
+            recipe.ingredients.forEach { ing ->
                 val cleaned = ing.lowercase()
                     .replace(Regex("[0-9½¼¾⅓⅔⅛⅜⅝⅞]"), "")
                     .split(" ")
@@ -99,7 +99,7 @@ class SearchIngredientsViewModel(private val supabase: io.github.jan.supabase.Su
         }
         _filteredRecipes.value = _allRecipes.value?.filter { recipe ->
             selected.all { sel ->
-                recipe.ingredients?.contains(sel, ignoreCase = true) == true
+                recipe.ingredients.any { it.contains(sel, ignoreCase = true) }
             }
         } ?: emptyList()
     }

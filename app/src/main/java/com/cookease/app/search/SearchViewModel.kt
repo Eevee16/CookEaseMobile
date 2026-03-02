@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.cookease.app.Recipe
 import com.cookease.app.SupabaseClientProvider
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import kotlinx.coroutines.launch
 
 class SearchViewModel : ViewModel() {
@@ -37,11 +36,11 @@ class SearchViewModel : ViewModel() {
 
     fun filterRecipes(category: String, cuisine: String, searchTerm: String) {
         val filtered = allRecipes.filter { recipe ->
-            (category.isBlank() || recipe.category.equals(category, ignoreCase = true)) &&
-                    (cuisine.isBlank() || recipe.cuisine.equals(cuisine, ignoreCase = true)) &&
+            (category.isBlank() || recipe.category?.contains(category, ignoreCase = true) == true) &&
+                    (cuisine.isBlank() || recipe.cuisine?.contains(cuisine, ignoreCase = true) == true) &&
                     (searchTerm.isBlank() ||
                             recipe.title.contains(searchTerm, ignoreCase = true) ||
-                            recipe.ingredients?.contains(searchTerm, ignoreCase = true) == true)
+                            recipe.ingredients.any { it.contains(searchTerm, ignoreCase = true) })
         }
         _filteredRecipes.value = filtered
     }

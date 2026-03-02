@@ -1,33 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_marginBottom="@dimen/spacing_xxlarge">
+    android:orientation="vertical"
+    android:layout_marginBottom="12dp">
 
-    <!-- Step Number -->
-    <TextView
-        android:id="@+id/tvStepNumber"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/bg_button_primary"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:fontFamily="sans-serif-black"
-        tools:text="1"/>
-
-    <!-- Step Content -->
-    <TextView
-        android:id="@+id/tvInstruction"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="@dimen/spacing_xlarge"
-        android:paddingTop="4dp"
-        android:textSize="17sp"
-        android:textColor="@color/gray_700"
-        android:lineSpacingMultiplier="1.8"
-        tools:text="In a large pan, heat oil over medium heat. Add chicken pieces and brown on all sides."/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/tvStepNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Step 1"
+            android:textSize="13sp"
+            android:textColor="@color/purple_primary"
+            android:fontFamily="sans-serif-medium"/>
+
+        <ImageButton
+            android:id="@+id/btnRemoveStep"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Remove step"
+            android:padding="4dp"/>
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.CookEase.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Describe this step...">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tvInstruction"
+            style="@style/Widget.CookEase.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine|textCapSentences"
+            android:minLines="2"
+            android:gravity="top"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
 </LinearLayout>

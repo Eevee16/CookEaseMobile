@@ -4,20 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/background_secondary">
+    android:background="@drawable/bg_gradient_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_xlarge">
+        android:padding="@dimen/spacing_xlarge"
+        android:gravity="center">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardAuthContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_huge"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="10dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -27,9 +28,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:gravity="center"
                 android:padding="@dimen/card_padding">
 
                 <!-- Header -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="🍳"
+                    android:textSize="64sp"
+                    android:layout_marginBottom="8dp"/>
+
                 <TextView
                     android:id="@+id/tvLogo"
                     android:layout_width="wrap_content"
@@ -108,15 +118,6 @@
                         android:maxLines="1"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Password Strength -->
-                <TextView
-                    android:id="@+id/tvPasswordStrength"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_small"
-                    android:textSize="12sp"
-                    android:visibility="gone"/>
-
                 <!-- Forgot Password -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnForgotPassword"
@@ -135,7 +136,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/login"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:backgroundTint="@color/purple_primary"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp"/>
 
                 <!-- Footer -->
                 <LinearLayout
@@ -143,14 +147,15 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/spacing_xlarge"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/no_account"
                         android:textColor="@color/gray_600"
-                        android:textSize="@dimen/text_normal"/>
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/tvSignUp"
@@ -160,7 +165,10 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:text="@string/sign_up"
-                        android:textAppearance="@style/TextAppearance.Link"/>
+                        android:textAppearance="@style/TextAppearance.Link"
+                        android:textSize="15sp"
+                        android:textColor="@color/purple_primary"
+                        android:fontFamily="sans-serif-medium"/>
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

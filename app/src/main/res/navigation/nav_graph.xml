@@ -5,6 +5,20 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
+    <!-- Global Actions - Can be called from any fragment -->
+    <action
+        android:id="@+id/action_global_homeFragment"
+        app:destination="@id/nav_home"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="false"
+        app:launchSingleTop="true"/>
+
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"/>
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.cookease.app.ui.auth.LoginFragment"
@@ -49,11 +63,6 @@
             android:id="@+id/action_resetPasswordFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:popUpTo="@id/resetPasswordFragment"
-            app:popUpToInclusive="true"/>
-        <action
-            android:id="@+id/action_global_homeFragment"
-            app:destination="@id/nav_home"
-            app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
     </fragment>
 
@@ -128,7 +137,7 @@
 
     <fragment
         android:id="@+id/recipeDetailFragment"
-        android:name="com.cookease.app.ui.recipe.RecipeDetailFragment"
+        android:name="com.cookease.app.ui_components.recipe.RecipeDetailFragment"
         android:label="Recipe Detail"
         tools:layout="@layout/fragment_recipe_detail">
         <argument

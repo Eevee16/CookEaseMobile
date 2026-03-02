@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cookease.app.R
 import com.cookease.app.databinding.FragmentSearchBinding
-import com.cookease.app.ui.recipe.RecipeAdapter
+import com.cookease.app.ui_components.recipe.RecipeAdapter
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
