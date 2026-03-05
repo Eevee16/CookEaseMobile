@@ -9,9 +9,9 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cookease.app.R
@@ -71,7 +71,9 @@ class ModeratorDashboardFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = ModeratorAdapter(emptyList(), object : ModeratorAdapter.RecipeActionListener {
             override fun onView(recipe: Recipe) {
-                // TODO: navigate to recipe detail
+                // Navigate to Recipe Detail from Moderator Dashboard
+                val action = ModeratorDashboardFragmentDirections.actionModeratorDashboardFragmentToRecipeDetailFragment(recipe.id)
+                findNavController().navigate(action)
             }
 
             override fun onApprove(recipe: Recipe) {

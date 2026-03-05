@@ -47,6 +47,21 @@ class SavedRecipeRepository(
         }
     }
 
+    suspend fun addToSaved(recipe: Recipe): Resource<Unit> {
+        try {
+            val userId = supabase.auth.currentUserOrNull()?.id
+            if (userId != null) {
+                supabase.postgrest["saved_recipes"].insert(
+                    mapOf("user_id" to userId, "recipe_id" to recipe.id)
+                )
+            }
+        } catch (e: Exception) {
+            // ignore supabase error for local save
+        }
+        db.savedRecipeDao().insertRecipe(recipe.toEntity())
+        return Resource.Success(Unit)
+    }
+
     suspend fun removeFromSaved(recipeId: String): Resource<Unit> {
         return try {
             val userId = supabase.auth.currentUserOrNull()?.id

@@ -55,7 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="20dp"
-            app:cardElevation="8dp">
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -137,7 +138,7 @@
                     style="@style/Widget.CookEase.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="24dp"
                     android:hint="@string/cook_time_min">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -147,34 +148,6 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:maxLines="1"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Servings -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/servings"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray_700"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginBottom="8dp"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilServings"
-                    style="@style/Widget.CookEase.TextInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:hint="@string/servings">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etServings"
-                        style="@style/Widget.CookEase.TextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:maxLines="1"
-                        android:text="4"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Buttons Row -->

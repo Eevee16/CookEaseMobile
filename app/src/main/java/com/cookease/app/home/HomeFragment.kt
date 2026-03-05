@@ -90,7 +90,14 @@ class HomeFragment : Fragment() {
                 is Resource.Error -> {
                     binding.loadingProgress.visibility = View.GONE
                     binding.rvRecipes.visibility = View.GONE
-                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
+                    
+                    // Improved error handling for offline state
+                    val errorMsg = if (result.message?.contains("Unable to resolve host", ignoreCase = true) == true) {
+                        "App is offline. Check your connection."
+                    } else {
+                        result.message ?: "Failed to load recipes"
+                    }
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
                 }
             }
         }

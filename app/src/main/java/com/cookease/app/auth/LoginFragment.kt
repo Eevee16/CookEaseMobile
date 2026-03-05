@@ -80,6 +80,10 @@ class LoginFragment : Fragment() {
                     is AuthState.Error -> {
                         setLoadingState(false)
                         val friendlyMessage = when {
+                            state.message.contains("network", ignoreCase = true) ||
+                                    state.message.contains("Unable to resolve", ignoreCase = true) ||
+                                    state.message.contains("ConnectException", ignoreCase = true) ->
+                                "App is offline. Check your network."
                             state.message.contains("Invalid login credentials", ignoreCase = true) ->
                                 "Incorrect password. Please try again."
                             state.message.contains("Email not confirmed", ignoreCase = true) ->
@@ -89,9 +93,6 @@ class LoginFragment : Fragment() {
                                 "No account found with this email address."
                             state.message.contains("rate limit", ignoreCase = true) ->
                                 "Too many attempts. Please wait a minute and try again."
-                            state.message.contains("network", ignoreCase = true) ||
-                                    state.message.contains("Unable to resolve", ignoreCase = true) ->
-                                "No internet connection. Please check your network."
                             else -> "Login failed: ${state.message}"
                         }
                         showError(friendlyMessage)

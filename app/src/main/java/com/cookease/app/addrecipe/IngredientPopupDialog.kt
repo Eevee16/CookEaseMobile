@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.cookease.app.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
@@ -26,7 +29,9 @@ class IngredientPopupDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val ivImage = view.findViewById<ImageView>(R.id.ivPopupIngredientImage) // ✅ new
         val tvTitle = view.findViewById<TextView>(R.id.tvPopupIngredientName)
+        val tvSubtitle = view.findViewById<TextView>(R.id.tvPopupSubtitle)      // ✅ new
         val etQty = view.findViewById<TextInputEditText>(R.id.etPopupQty)
         val spUnit = view.findViewById<Spinner>(R.id.spPopupUnit)
         val etPrep = view.findViewById<TextInputEditText>(R.id.etPopupPrep)
@@ -34,7 +39,16 @@ class IngredientPopupDialog(
         val btnCancel = view.findViewById<MaterialButton>(R.id.btnPopupCancel)
         val btnConfirm = view.findViewById<MaterialButton>(R.id.btnPopupConfirm)
 
+        // ✅ synced: show ingredient image in popup header
+        ivImage.load(ingredient.image_url.ifEmpty { null }) {
+            placeholder(R.drawable.ic_ingredient_placeholder)
+            error(R.drawable.ic_ingredient_placeholder)
+            transformations(RoundedCornersTransformation(12f))
+        }
+
         tvTitle.text = ingredient.name
+        // ✅ synced: subtitle matches web "Add quantity & prep details"
+        tvSubtitle.text = "Add quantity & prep details"
         btnConfirm.text = "Add ${ingredient.name}"
 
         // Unit spinner
@@ -45,7 +59,7 @@ class IngredientPopupDialog(
         )
         spUnit.adapter = unitAdapter
 
-        // Prep suggestion chips
+        // ✅ synced: full PREP_SUGGESTIONS list + self-toggle (tap active chip to deselect)
         AddRecipeViewModel.PREP_SUGGESTIONS.forEach { suggestion ->
             val chip = Chip(requireContext()).apply {
                 text = suggestion
@@ -53,13 +67,16 @@ class IngredientPopupDialog(
                 setOnCheckedChangeListener { _, checked ->
                     if (checked) {
                         etPrep.setText(suggestion)
-                        // uncheck others
+                        // uncheck all other chips
                         for (i in 0 until chipGroup.childCount) {
                             val c = chipGroup.getChildAt(i) as? Chip
                             if (c != this) c?.isChecked = false
                         }
                     } else {
-                        if (etPrep.text.toString() == suggestion) etPrep.setText("")
+                        // ✅ synced: tapping active chip clears the prep field
+                        if (etPrep.text.toString() == suggestion) {
+                            etPrep.setText("")
+                        }
                     }
                 }
             }

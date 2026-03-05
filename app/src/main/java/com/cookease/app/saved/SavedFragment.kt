@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cookease.app.Resource
 import com.cookease.app.databinding.FragmentSavedBinding
@@ -37,8 +38,8 @@ class SavedFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = RecipeAdapter(
             onRecipeClick = { recipe ->
-                // TODO: Navigate to RecipeDetailFragment
-                Toast.makeText(requireContext(), "Opening: ${recipe.title}", Toast.LENGTH_SHORT).show()
+                val action = SavedFragmentDirections.actionSavedToRecipeDetail(recipe.id)
+                findNavController().navigate(action)
             },
             onRemoveClick = { recipe ->
                 viewModel.removeFromSaved(recipe.id)

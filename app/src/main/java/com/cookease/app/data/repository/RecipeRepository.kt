@@ -1,6 +1,8 @@
 package com.cookease.app.data.repository
 
 import com.cookease.app.Recipe
+import com.cookease.app.data.local.AppDatabase
+import com.cookease.app.saved.toRecipe
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
@@ -9,12 +11,22 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
 
-class RecipeRepository(private val supabase: SupabaseClient) {
+class RecipeRepository(
+    private val supabase: SupabaseClient,
+    private val db: AppDatabase? = null
+) {
 
     suspend fun getRecipeById(id: String): Result<Recipe> = runCatching {
-        supabase.postgrest["recipes"]
-            .select(Columns.ALL) { filter { eq("id", id) } }
-            .decodeSingle<Recipe>()
+        try {
+            // First try fetching from Supabase (online)
+            supabase.postgrest["recipes"]
+                .select(Columns.ALL) { filter { eq("id", id) } }
+                .decodeSingle<Recipe>()
+        } catch (e: Exception) {
+            // If offline or error, try fetching from local Room database
+            val localRecipe = db?.savedRecipeDao()?.getRecipeById(id)
+            localRecipe?.toRecipe() ?: throw e
+        }
     }
 
     suspend fun incrementViewCount(id: String): Result<Unit> = runCatching {

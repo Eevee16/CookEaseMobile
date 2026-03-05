@@ -282,6 +282,10 @@ class SignupFragment : Fragment() {
             } catch (e: Exception) {
                 val msg = e.message ?: ""
                 when {
+                    msg.contains("network", ignoreCase = true) ||
+                            msg.contains("Unable to resolve", ignoreCase = true) ||
+                            msg.contains("ConnectException", ignoreCase = true) ->
+                        showError("App is offline. Check your network.")
                     msg.contains("rate limit", ignoreCase = true) ->
                         showError("Too many signup attempts. Please wait a minute and try again.")
                     msg.contains("already registered", ignoreCase = true) ||

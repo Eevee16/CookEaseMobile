@@ -9,8 +9,11 @@ import com.cookease.app.SupabaseClientProvider
 import com.cookease.app.User
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
 
 class ProfileViewModel : ViewModel() {
 
@@ -30,6 +33,9 @@ class ProfileViewModel : ViewModel() {
 
     private val _role = MutableLiveData<String?>(null)
     val role: LiveData<String?> = _role
+
+    private val _updateResult = MutableLiveData<Result<Unit>>()
+    val updateResult: LiveData<Result<Unit>> = _updateResult
 
     private var activeTab = "all"
 
@@ -83,7 +89,6 @@ class ProfileViewModel : ViewModel() {
                     photoUrl = photoUrl
                 )
 
-                // ── Fix: use owner_id not user_id ─────────────────────
                 val recipes = client.postgrest.from("recipes")
                     .select {
                         filter { eq("owner_id", currentUser.id) }
@@ -102,6 +107,46 @@ class ProfileViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+    }
+
+    fun updateProfile(firstName: String, lastName: String, imageBytes: ByteArray?, mimeType: String?) {
+        viewModelScope.launch {
+            try {
+                val client = SupabaseClientProvider.client
+                val userId = client.auth.currentUserOrNull()?.id ?: return@launch
+
+                var photoUrl = _user.value?.photoUrl
+
+                // 1. Upload photo if changed
+                if (imageBytes != null && mimeType != null) {
+                    val ext = mimeType.substringAfter("/")
+                    val filePath = "$userId/avatar.$ext"
+                    client.storage.from("avatars").upload(filePath, imageBytes, upsert = true)
+                    photoUrl = client.storage.from("avatars").publicUrl(filePath)
+                }
+
+                // 2. Update profiles table
+                client.postgrest.from("profiles").update(
+                    buildJsonObject {
+                        put("first_name", firstName)
+                        put("last_name", lastName)
+                        put("photo_url", photoUrl)
+                    }
+                ) {
+                    filter { eq("id", userId) }
+                }
+
+                // 3. Update local state
+                _user.value = _user.value?.copy(
+                    name = "$firstName $lastName".trim(),
+                    photoUrl = photoUrl
+                )
+                _updateResult.value = Result.success(Unit)
+
+            } catch (e: Exception) {
+                _updateResult.value = Result.failure(e)
             }
         }
     }

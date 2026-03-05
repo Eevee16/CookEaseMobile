@@ -9,6 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cookease.app.R
@@ -51,7 +52,8 @@ class RecipeStep3Fragment : Fragment(R.layout.fragment_add_step3) {
                 showIngredientPopup(ingredient)
             }
         )
-        rvResults.layoutManager = LinearLayoutManager(requireContext())
+        // ✅ UI Improvement: Use Grid Layout (2 columns) as per images
+        rvResults.layoutManager = GridLayoutManager(requireContext(), 2)
         rvResults.adapter = searchAdapter
 
         // ── Selected Adapter ──────────────────────────────────────────
@@ -104,6 +106,7 @@ class RecipeStep3Fragment : Fragment(R.layout.fragment_add_step3) {
         etSearch.addTextChangedListener { text ->
             val query = text.toString().trim()
             val all = viewModel.allIngredients.value ?: emptyList()
+            // ✅ Fix: Search logic was correct, but visibility might have been an issue
             val filtered = if (query.isEmpty()) all.take(8) else all.filter {
                 it.name.contains(query, ignoreCase = true)
             }

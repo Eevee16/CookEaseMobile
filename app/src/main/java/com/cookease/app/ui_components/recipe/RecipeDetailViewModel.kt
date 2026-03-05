@@ -1,5 +1,6 @@
 package com.cookease.app.ui_components.recipe
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,9 +8,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.cookease.app.Recipe
 import com.cookease.app.SupabaseClientProvider
+import com.cookease.app.data.local.AppDatabase
 import com.cookease.app.data.repository.RecipeRepository
+import com.cookease.app.saved.SavedRecipeRepository
 import kotlinx.coroutines.launch
-import android.content.Context
 
 sealed class RecipeDetailState {
     object Loading : RecipeDetailState()
@@ -18,7 +20,10 @@ sealed class RecipeDetailState {
     data class Error(val message: String) : RecipeDetailState()
 }
 
-class RecipeDetailViewModel(private val repository: RecipeRepository) : ViewModel() {
+class RecipeDetailViewModel(
+    private val repository: RecipeRepository,
+    private val savedRepository: SavedRecipeRepository
+) : ViewModel() {
 
     private val _state = MutableLiveData<RecipeDetailState>()
     val state: LiveData<RecipeDetailState> = _state
@@ -37,11 +42,20 @@ class RecipeDetailViewModel(private val repository: RecipeRepository) : ViewMode
             repository.getRecipeById(id)
                 .onSuccess { recipe ->
                     _state.value = RecipeDetailState.Success(recipe)
+                    checkIfSaved(id)
                     trackView(id)
                 }
                 .onFailure {
                     _state.value = RecipeDetailState.NotFound
                 }
+        }
+    }
+
+    private fun checkIfSaved(id: String) {
+        viewModelScope.launch {
+            savedRepository.getSavedRecipes().collect { savedList ->
+                _isSaved.postValue(savedList.any { it.id == id })
+            }
         }
     }
 
@@ -51,7 +65,20 @@ class RecipeDetailViewModel(private val repository: RecipeRepository) : ViewMode
         viewModelScope.launch { repository.incrementViewCount(id) }
     }
 
-    fun toggleSaved() { _isSaved.value = !(_isSaved.value ?: false) }
+    fun toggleSaved() {
+        val recipe = (state.value as? RecipeDetailState.Success)?.recipe ?: return
+        val currentlySaved = _isSaved.value ?: false
+        
+        viewModelScope.launch {
+            if (currentlySaved) {
+                savedRepository.removeFromSaved(recipe.id)
+                _isSaved.postValue(false)
+            } else {
+                savedRepository.addToSaved(recipe)
+                _isSaved.postValue(true)
+            }
+        }
+    }
 
     fun adjustServings(increment: Float) {
         val new = (_servingsMultiplier.value ?: 1.0f) + increment
@@ -72,9 +99,12 @@ class RecipeDetailViewModel(private val repository: RecipeRepository) : ViewMode
 
 class RecipeDetailViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val db = AppDatabase.getInstance(context)
+        val supabase = SupabaseClientProvider.client
         @Suppress("UNCHECKED_CAST")
         return RecipeDetailViewModel(
-            RecipeRepository(SupabaseClientProvider.client)
+            RecipeRepository(supabase, db), // Passed the db instance here
+            SavedRecipeRepository(db, supabase)
         ) as T
     }
 }

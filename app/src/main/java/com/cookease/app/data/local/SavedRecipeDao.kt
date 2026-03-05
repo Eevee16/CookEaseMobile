@@ -9,6 +9,9 @@ interface SavedRecipeDao {
     @Query("SELECT * FROM saved_recipes ORDER BY savedAt DESC")
     fun getAllSavedRecipes(): Flow<List<RecipeEntity>>
 
+    @Query("SELECT * FROM saved_recipes WHERE id = :recipeId")
+    suspend fun getRecipeById(recipeId: String): RecipeEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipe(recipe: RecipeEntity)
 

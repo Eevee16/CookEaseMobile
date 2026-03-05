@@ -99,6 +99,9 @@
         <action
             android:id="@+id/action_search_to_searchIngredients"
             app:destination="@id/searchIngredientsFragment"/>
+        <action
+            android:id="@+id/action_search_to_recipeDetail"
+            app:destination="@id/recipeDetailFragment"/>
     </fragment>
 
     <fragment
@@ -163,7 +166,11 @@
         android:id="@+id/moderatorDashboardFragment"
         android:name="com.cookease.app.moderator.ModeratorDashboardFragment"
         android:label="Moderator Dashboard"
-        tools:layout="@layout/fragment_moderator_dashboard"/>
+        tools:layout="@layout/fragment_moderator_dashboard">
+        <action
+            android:id="@+id/action_moderatorDashboardFragment_to_recipeDetailFragment"
+            app:destination="@id/recipeDetailFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_saved"

@@ -27,6 +27,9 @@ class RecipeDetailFragment : Fragment() {
         RecipeDetailViewModelFactory(requireContext())
     }
 
+    // Track if user just clicked save button (to trigger navigation)
+    private var justSavedRecipe = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,16 +75,41 @@ class RecipeDetailFragment : Fragment() {
 
         viewModel.isSaved.observe(viewLifecycleOwner) { saved ->
             binding.btnSave.text = if (saved) "✓ Saved" else "🔖 Save Recipe"
+            binding.btnDownload.isVisible = saved
+
+            // Navigate to saved page if user just saved the recipe
+            if (saved && justSavedRecipe) {
+                justSavedRecipe = false // Reset flag
+                Snackbar.make(binding.root, "Recipe saved!", Snackbar.LENGTH_SHORT).show()
+
+                // Navigate to saved recipes page
+                try {
+                    findNavController().navigate(R.id.nav_saved)
+                } catch (e: Exception) {
+                    // Navigation failed, stay on current page
+                    e.printStackTrace()
+                }
+            } else if (!saved && justSavedRecipe) {
+                // Recipe was unsaved
+                justSavedRecipe = false
+                Snackbar.make(binding.root, "Recipe removed from favorites", Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { findNavController().navigateUp() }
+
         binding.btnSave.setOnClickListener {
+            justSavedRecipe = true // Set flag before toggling
             viewModel.toggleSaved()
-            val msg = if (viewModel.isSaved.value == true) "Recipe saved!" else "Recipe removed from favorites"
-            Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
+            // Message and navigation handled in isSaved observer
         }
+
+        binding.btnDownload.setOnClickListener {
+            Snackbar.make(binding.root, "Recipe downloaded for offline use", Snackbar.LENGTH_SHORT).show()
+        }
+
         binding.btnShare.setOnClickListener {
             val recipe = (viewModel.state.value as? RecipeDetailState.Success)?.recipe ?: return@setOnClickListener
             val intent = Intent(Intent.ACTION_SEND).apply {

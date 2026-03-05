@@ -98,11 +98,11 @@ dependencies {
     implementation("androidx.room:room-ktx:2.7.1")
     ksp("androidx.room:room-compiler:2.7.1")
 
-    // Supabase
-    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.1.0")
-    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.1.0")
-    implementation("io.github.jan-tennert.supabase:storage-kt:2.1.0")
-    implementation("io.ktor:ktor-client-android:2.3.7")
+    // Supabase - Updated to more stable 2.5.x versions to fix URL propagation issues
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.5.1")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.5.1")
+    implementation("io.github.jan-tennert.supabase:storage-kt:2.5.1")
+    implementation("io.ktor:ktor-client-android:2.3.12")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // Testing

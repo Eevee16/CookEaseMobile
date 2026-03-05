@@ -37,12 +37,18 @@ class RecipeStep2Fragment : Fragment(R.layout.fragment_add_step2) {
         val btnBack = view.findViewById<MaterialButton>(R.id.btnBackStep2)
         val btnNext = view.findViewById<MaterialButton>(R.id.btnNextStep2)
 
+        // NOTE: Serving size option removed as requested
+
         // ── Restore state ─────────────────────────────────────────────
-        etPrepTime.setText(viewModel.prepTime.value)
-        etCookTime.setText(viewModel.cookTime.value)
-        viewModel.imageUri.value?.let {
-            ivRecipeImage.setImageURI(Uri.parse(it))
-            ivRecipeImage.setPadding(0, 0, 0, 0)
+        etPrepTime.setText(viewModel.prepTime.value ?: "")
+        etCookTime.setText(viewModel.cookTime.value ?: "")
+        viewModel.imageUri.value?.let { uriString ->
+            try {
+                ivRecipeImage.setImageURI(Uri.parse(uriString))
+                ivRecipeImage.setPadding(0, 0, 0, 0)
+            } catch (e: Exception) {
+                // Invalid URI, ignore
+            }
         }
 
         // ── Image picker ──────────────────────────────────────────────
@@ -62,15 +68,15 @@ class RecipeStep2Fragment : Fragment(R.layout.fragment_add_step2) {
 
             var hasError = false
 
-            if (prepTime.isEmpty() || prepTime.toIntOrNull() == null) {
-                tilPrepTime.error = "Please enter a valid prep time"
+            if (prepTime.isEmpty() || prepTime.toIntOrNull() == null || prepTime.toInt() <= 0) {
+                tilPrepTime.error = "Please enter a valid prep time (minutes)"
                 hasError = true
             } else {
                 tilPrepTime.error = null
             }
 
-            if (cookTime.isEmpty() || cookTime.toIntOrNull() == null) {
-                tilCookTime.error = "Please enter a valid cook time"
+            if (cookTime.isEmpty() || cookTime.toIntOrNull() == null || cookTime.toInt() <= 0) {
+                tilCookTime.error = "Please enter a valid cook time (minutes)"
                 hasError = true
             } else {
                 tilCookTime.error = null
