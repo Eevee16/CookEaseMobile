@@ -1,5 +1,7 @@
 package com.cookease.app.addrecipe
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +10,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
@@ -30,6 +31,8 @@ class SelectedIngredientAdapter(
         val spUnit: Spinner = view.findViewById(R.id.spIngredientUnit)
         val etPrep: TextInputEditText = view.findViewById(R.id.etIngredientPrep)
         val btnRemove: ImageButton = view.findViewById(R.id.btnRemoveIngredient)
+        var qtyWatcher: TextWatcher? = null
+        var prepWatcher: TextWatcher? = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -42,17 +45,32 @@ class SelectedIngredientAdapter(
         val item = items[position]
 
         holder.tvName.text = item.name
-        holder.ivImage.load(item.image_url.ifEmpty { null }) {
+        holder.ivImage.load(item.image_url?.takeIf { it.isNotEmpty() }) {
             placeholder(R.drawable.ic_ingredient_placeholder)
             error(R.drawable.ic_ingredient_placeholder)
             transformations(RoundedCornersTransformation(8f))
         }
 
-        // Qty
-        holder.etQty.setText(item.qty)
-        holder.etQty.addTextChangedListener { onQtyChanged(position, it.toString()) }
+        // --- Qty ---
+        holder.qtyWatcher?.let { holder.etQty.removeTextChangedListener(it) }
+        if (holder.etQty.text.toString() != item.qty) {
+            holder.etQty.setText(item.qty)
+        }
+        val qWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val pos = holder.bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    val newText = s?.toString() ?: ""
+                    if (items[pos].qty != newText) onQtyChanged(pos, newText)
+                }
+            }
+        }
+        holder.etQty.addTextChangedListener(qWatcher)
+        holder.qtyWatcher = qWatcher
 
-        // Unit spinner
+        // --- Unit spinner ---
         val unitAdapter = ArrayAdapter(
             holder.itemView.context,
             android.R.layout.simple_spinner_dropdown_item,
@@ -60,26 +78,52 @@ class SelectedIngredientAdapter(
         )
         holder.spUnit.adapter = unitAdapter
         val unitPos = AddRecipeViewModel.UNITS.indexOf(item.unit)
-        if (unitPos >= 0) holder.spUnit.setSelection(unitPos)
+        if (unitPos >= 0) holder.spUnit.setSelection(unitPos, false)
+        
         holder.spUnit.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p: android.widget.AdapterView<*>?, v: View?, pos: Int, id: Long) {
-                onUnitChanged(position, AddRecipeViewModel.UNITS[pos])
+                val bPos = holder.bindingAdapterPosition
+                if (bPos != RecyclerView.NO_POSITION) {
+                    val newUnit = AddRecipeViewModel.UNITS[pos]
+                    if (items[bPos].unit != newUnit) onUnitChanged(bPos, newUnit)
+                }
             }
             override fun onNothingSelected(p: android.widget.AdapterView<*>?) {}
         }
 
-        // Prep
-        holder.etPrep.setText(item.prep)
-        holder.etPrep.addTextChangedListener { onPrepChanged(position, it.toString()) }
+        // --- Prep ---
+        holder.prepWatcher?.let { holder.etPrep.removeTextChangedListener(it) }
+        if (holder.etPrep.text.toString() != item.prep) {
+            holder.etPrep.setText(item.prep)
+        }
+        val pWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val pos = holder.bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    val newText = s?.toString() ?: ""
+                    if (items[pos].prep != newText) onPrepChanged(pos, newText)
+                }
+            }
+        }
+        holder.etPrep.addTextChangedListener(pWatcher)
+        holder.prepWatcher = pWatcher
 
         // Remove
-        holder.btnRemove.setOnClickListener { onRemove(position) }
+        holder.btnRemove.setOnClickListener {
+            val pos = holder.bindingAdapterPosition
+            if (pos != RecyclerView.NO_POSITION) onRemove(pos)
+        }
     }
 
     override fun getItemCount() = items.size
 
-    fun updateList(newItems: MutableList<SelectedIngredient>) {
-        items = newItems
-        notifyDataSetChanged()
+    fun updateList(newItems: List<SelectedIngredient>) {
+        val sizeChanged = items.size != newItems.size
+        items = newItems.toMutableList()
+        if (sizeChanged) {
+            notifyDataSetChanged()
+        }
     }
 }

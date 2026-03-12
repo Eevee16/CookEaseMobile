@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="@drawable/bg_bottom_sheet">
 
     <!-- Header: image + name + subtitle -->
     <LinearLayout
@@ -12,15 +13,21 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="24dp">
 
-        <!-- ✅ added: ingredient image (from web) -->
-        <ImageView
-            android:id="@+id/ivPopupIngredientImage"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:scaleType="centerCrop"
-            android:layout_marginEnd="12dp" />
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+            <ImageView
+                android:id="@+id/ivPopupIngredientImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_ingredient_placeholder" />
+        </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -32,20 +39,30 @@
                 android:id="@+id/tvPopupIngredientName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textColor="@color/gray_900"
-                android:fontFamily="sans-serif-medium"
-                android:layout_marginBottom="4dp" />
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium" />
 
             <TextView
                 android:id="@+id/tvPopupSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add quantity &amp; prep details"
-                android:textSize="13sp"
-                android:textColor="@color/gray_500" />
+                android:textSize="14sp"
+                android:textColor="@color/gray_500"
+                android:layout_marginTop="2dp"/>
 
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnPopupClose"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:tint="@color/gray_400"
+            android:layout_gravity="top"/>
 
     </LinearLayout>
 
@@ -54,48 +71,94 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="20dp"
+        android:weightSum="2">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.CookEase.TextInputLayout"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:hint="Quantity">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPopupQty"
-                style="@style/Widget.CookEase.TextInputEditText"
+            android:orientation="vertical"
+            android:layout_marginEnd="12dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quantity"
+                android:textSize="14sp"
+                android:textColor="@color/gray_900"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
+                app:boxStrokeColor="@color/orange_primary"
+                app:hintEnabled="false">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPopupQty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="e.g. 2"
+                    android:inputType="numberDecimal"
+                    android:padding="12dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spPopupUnit"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/bg_spinner"
-            android:padding="12dp" />
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unit"
+                android:textSize="14sp"
+                android:textColor="@color/gray_900"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+            <Spinner
+                android:id="@+id/spPopupUnit"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_spinner"
+                android:padding="12dp" />
+        </LinearLayout>
 
     </LinearLayout>
 
     <!-- Prep -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Preparation"
+        android:textSize="14sp"
+        android:textColor="@color/gray_900"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="optional"
+        android:textSize="12sp"
+        android:textColor="@color/gray_400"
+        android:layout_gravity="end"
+        android:layout_marginTop="-24dp"
+        android:layout_marginBottom="8dp"/>
+
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.CookEase.TextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Preparation (optional)"
-        android:layout_marginBottom="12dp">
+        app:hintEnabled="false"
+        android:layout_marginBottom="16dp">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPopupPrep"
-            style="@style/Widget.CookEase.TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="e.g. minced, thinly sliced, beaten..."
             android:inputType="text"
-            android:maxLines="1" />
+            android:padding="12dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Prep suggestion chips -->
@@ -103,34 +166,41 @@
         android:id="@+id/chipGroupPrepSuggestions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        app:singleSelection="false" />
+        android:layout_marginBottom="32dp"
+        app:chipSpacingHorizontal="8dp"
+        app:chipSpacingVertical="4dp"
+        app:singleSelection="true" />
 
     <!-- Action buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPopupCancel"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
+            android:layout_height="56dp"
+            android:layout_weight="0.8"
+            android:layout_marginEnd="12dp"
             android:text="Cancel"
-            android:textAllCaps="false" />
+            android:textColor="@color/gray_600"
+            app:strokeColor="@color/gray_300"
+            android:textAllCaps="false"
+            app:cornerRadius="12dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPopupConfirm"
-            style="@style/Widget.CookEase.Button.Primary"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@color/purple_primary"
+            android:layout_height="56dp"
+            android:layout_weight="1.2"
+            android:backgroundTint="@color/orange_primary"
             android:text="Add"
-            android:textAllCaps="false" />
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            app:cornerRadius="12dp" />
 
     </LinearLayout>
 

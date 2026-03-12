@@ -29,9 +29,9 @@ class IngredientPopupDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val ivImage = view.findViewById<ImageView>(R.id.ivPopupIngredientImage) // ✅ new
+        val ivImage = view.findViewById<ImageView>(R.id.ivPopupIngredientImage)
         val tvTitle = view.findViewById<TextView>(R.id.tvPopupIngredientName)
-        val tvSubtitle = view.findViewById<TextView>(R.id.tvPopupSubtitle)      // ✅ new
+        val tvSubtitle = view.findViewById<TextView>(R.id.tvPopupSubtitle)
         val etQty = view.findViewById<TextInputEditText>(R.id.etPopupQty)
         val spUnit = view.findViewById<Spinner>(R.id.spPopupUnit)
         val etPrep = view.findViewById<TextInputEditText>(R.id.etPopupPrep)
@@ -39,15 +39,14 @@ class IngredientPopupDialog(
         val btnCancel = view.findViewById<MaterialButton>(R.id.btnPopupCancel)
         val btnConfirm = view.findViewById<MaterialButton>(R.id.btnPopupConfirm)
 
-        // ✅ synced: show ingredient image in popup header
-        ivImage.load(ingredient.image_url.ifEmpty { null }) {
+        // ✅ Fixed: Added safe call ?. for nullable image_url
+        ivImage.load(ingredient.image_url?.ifEmpty { null }) {
             placeholder(R.drawable.ic_ingredient_placeholder)
             error(R.drawable.ic_ingredient_placeholder)
             transformations(RoundedCornersTransformation(12f))
         }
 
         tvTitle.text = ingredient.name
-        // ✅ synced: subtitle matches web "Add quantity & prep details"
         tvSubtitle.text = "Add quantity & prep details"
         btnConfirm.text = "Add ${ingredient.name}"
 
@@ -59,7 +58,6 @@ class IngredientPopupDialog(
         )
         spUnit.adapter = unitAdapter
 
-        // ✅ synced: full PREP_SUGGESTIONS list + self-toggle (tap active chip to deselect)
         AddRecipeViewModel.PREP_SUGGESTIONS.forEach { suggestion ->
             val chip = Chip(requireContext()).apply {
                 text = suggestion
@@ -73,7 +71,6 @@ class IngredientPopupDialog(
                             if (c != this) c?.isChecked = false
                         }
                     } else {
-                        // ✅ synced: tapping active chip clears the prep field
                         if (etPrep.text.toString() == suggestion) {
                             etPrep.setText("")
                         }

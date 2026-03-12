@@ -96,22 +96,39 @@
                     android:layout_marginBottom="8dp"
                     android:text="Add at least one ingredient"/>
 
-                <!-- Search -->
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.CookEase.TextInputLayout"
+                <!-- Search with explicit button -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="Search ingredients..."
-                    app:startIconDrawable="@drawable/ic_search">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etIngredientSearch"
-                        style="@style/Widget.CookEase.TextInputEditText"
-                        android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.CookEase.TextInputLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:maxLines="1"/>
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:hint="Search ingredients..."
+                        app:startIconDrawable="@drawable/ic_search">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etIngredientSearch"
+                            style="@style/Widget.CookEase.TextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:maxLines="1"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSearchIngredientsAdd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="56dp"
+                        android:text="Search"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="@color/purple_primary"/>
+                </LinearLayout>
 
                 <!-- Search Results -->
                 <androidx.recyclerview.widget.RecyclerView

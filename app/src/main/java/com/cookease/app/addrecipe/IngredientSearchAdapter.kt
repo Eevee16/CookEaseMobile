@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.cookease.app.R
-import com.google.android.material.button.MaterialButton
 
 class IngredientSearchAdapter(
     private var items: List<IngredientItem>,
@@ -20,7 +19,7 @@ class IngredientSearchAdapter(
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
         val ivImage: ImageView = view.findViewById(R.id.ivIngredientImage)
         val tvName: TextView = view.findViewById(R.id.tvIngredientName)
-        val btnAdd: MaterialButton = view.findViewById(R.id.btnAddIngredient)
+        val btnAdd: TextView = view.findViewById(R.id.btnAddIngredient)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -34,7 +33,7 @@ class IngredientSearchAdapter(
         val added = isAdded(item)
 
         holder.tvName.text = item.name
-        holder.ivImage.load(item.image_url.ifEmpty { null }) {
+        holder.ivImage.load(item.image_url?.takeIf { it.isNotEmpty() }) {
             placeholder(R.drawable.ic_ingredient_placeholder)
             error(R.drawable.ic_ingredient_placeholder)
             transformations(RoundedCornersTransformation(8f))
@@ -44,6 +43,7 @@ class IngredientSearchAdapter(
             holder.btnAdd.text = "✓ Added"
             holder.btnAdd.isEnabled = false
             holder.btnAdd.alpha = 0.5f
+            holder.btnAdd.setOnClickListener(null)
         } else {
             holder.btnAdd.text = "+ Add"
             holder.btnAdd.isEnabled = true

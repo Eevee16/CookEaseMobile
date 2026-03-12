@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.cookease.app.Recipe
 import com.cookease.app.SupabaseClientProvider
+import com.cookease.app.addrecipe.IngredientItem
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
 import android.content.Context
@@ -15,11 +16,11 @@ class SearchIngredientsViewModel(private val supabase: io.github.jan.supabase.Su
 
     private val _allRecipes = MutableLiveData<List<Recipe>>(emptyList())
 
-    private val _allIngredients = MutableLiveData<List<String>>(emptyList())
-    val allIngredients: LiveData<List<String>> = _allIngredients
+    private val _allIngredients = MutableLiveData<List<IngredientItem>>(emptyList())
+    val allIngredients: LiveData<List<IngredientItem>> = _allIngredients
 
-    private val _filteredIngredients = MutableLiveData<List<String>>(emptyList())
-    val filteredIngredients: LiveData<List<String>> = _filteredIngredients
+    private val _filteredIngredients = MutableLiveData<List<IngredientItem>>(emptyList())
+    val filteredIngredients: LiveData<List<IngredientItem>> = _filteredIngredients
 
     private val _selectedIngredients = MutableLiveData<Set<String>>(emptySet())
     val selectedIngredients: LiveData<Set<String>> = _selectedIngredients
@@ -30,78 +31,95 @@ class SearchIngredientsViewModel(private val supabase: io.github.jan.supabase.Su
     private val _loading = MutableLiveData(true)
     val loading: LiveData<Boolean> = _loading
 
-    fun fetchRecipes() {
-        _loading.value = true
-        viewModelScope.launch {
-            runCatching {
-                supabase.postgrest["recipes"]
-                    .select {
-                        filter { eq("status", "approved") }
-                    }
-                    .decodeList<Recipe>()
-            }.onSuccess { data ->
-                _allRecipes.value = data
-                extractIngredients(data)
-                applyIngredientFilter()
-            }.onFailure {
-                _allRecipes.value = emptyList()
-            }
-            _loading.value = false
-        }
+    private var currentSearchQuery = ""
+
+    init {
+        fetchData()
     }
 
-    private fun extractIngredients(recipes: List<Recipe>) {
-        val set = mutableSetOf<String>()
-        val measurementWords = setOf("cup", "tablespoon", "teaspoon", "pound", "ounce",
-            "gram", "kg", "lb", "oz", "tbsp", "tsp")
-        val prepWords = setOf("minced", "chopped", "diced", "sliced", "crushed",
-            "ground", "fresh", "dried", "cooked", "peeled", "trimmed")
+    fun fetchData() {
+        _loading.value = true
+        viewModelScope.launch {
+            try {
+                // 1. Fetch Ingredients
+                val ingredients = supabase.postgrest["ingredients"]
+                    .select()
+                    .decodeList<IngredientItem>()
+                    .sortedBy { it.name }
+                
+                _allIngredients.value = ingredients
+                // Immediately populate filtered list so they show up before searching
+                filterIngredients(currentSearchQuery)
 
-        recipes.forEach { recipe ->
-            recipe.ingredients.forEach { ing ->
-                val cleaned = ing.lowercase()
-                    .replace(Regex("[0-9½¼¾⅓⅔⅛⅜⅝⅞]"), "")
-                    .split(" ")
-                    .filter { word -> word !in measurementWords && word !in prepWords }
-                    .joinToString(" ")
-                    .replace(Regex("\\s+"), " ")
-                    .trim()
-                if (cleaned.length > 2) set.add(cleaned)
+                // 2. Fetch Approved Recipes
+                val recipes = supabase.postgrest["recipes"]
+                    .select {
+                        filter { 
+                            or {
+                                eq("status", "approved")
+                                eq("status", "done")
+                            }
+                        }
+                    }
+                    .decodeList<Recipe>()
+                
+                _allRecipes.value = recipes
+                applyIngredientFilter()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                _loading.value = false
             }
         }
-        val sorted = set.sorted()
-        _allIngredients.value = sorted
-        _filteredIngredients.value = sorted
     }
 
     fun filterIngredients(query: String) {
-        _filteredIngredients.value = if (query.isBlank()) _allIngredients.value ?: emptyList()
-        else _allIngredients.value?.filter { it.contains(query, ignoreCase = true) } ?: emptyList()
+        currentSearchQuery = query
+        val all = _allIngredients.value ?: emptyList()
+        val selected = _selectedIngredients.value ?: emptySet()
+        
+        // Show all unselected ingredients if query is blank, otherwise filter
+        _filteredIngredients.value = if (query.isBlank()) {
+            all.filter { it.name !in selected }
+        } else {
+            all.filter { it.name !in selected && it.name.contains(query, ignoreCase = true) }
+        }
     }
 
-    fun toggleIngredient(ingredient: String) {
+    fun toggleIngredient(ingredientName: String) {
         val current = _selectedIngredients.value?.toMutableSet() ?: mutableSetOf()
-        if (current.contains(ingredient)) current.remove(ingredient) else current.add(ingredient)
+        if (current.contains(ingredientName)) {
+            current.remove(ingredientName)
+        } else {
+            current.add(ingredientName)
+        }
         _selectedIngredients.value = current
+        filterIngredients(currentSearchQuery)
         applyIngredientFilter()
     }
 
     fun clearAll() {
         _selectedIngredients.value = emptySet()
-        _filteredRecipes.value = emptyList()
+        filterIngredients("")
+        applyIngredientFilter()
     }
 
     private fun applyIngredientFilter() {
-        val selected = _selectedIngredients.value ?: return
+        val selected = _selectedIngredients.value ?: emptySet()
+        val recipes = _allRecipes.value ?: emptyList()
+
         if (selected.isEmpty()) {
-            _filteredRecipes.value = emptyList()
+            _filteredRecipes.value = recipes
             return
         }
-        _filteredRecipes.value = _allRecipes.value?.filter { recipe ->
+
+        _filteredRecipes.value = recipes.filter { recipe ->
             selected.all { sel ->
-                recipe.ingredients.any { it.contains(sel, ignoreCase = true) }
+                recipe.ingredients.any { ing -> 
+                    ing.contains(sel, ignoreCase = true)
+                }
             }
-        } ?: emptyList()
+        }
     }
 }
 

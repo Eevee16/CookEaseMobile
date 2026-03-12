@@ -37,15 +37,15 @@ class RecipeStep1Fragment : Fragment() {
     }
 
     private fun setupDropdowns() {
-        binding.actvCuisine.setAdapter(ArrayAdapter(
+        binding.actvCuisine.setAdapter(ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_dropdown_item_1line,
-            AddRecipeViewModel.CUISINE_OPTIONS // ✅ synced: now 16 cuisines
+            AddRecipeViewModel.CUISINE_OPTIONS
         ))
-        binding.actvCategory.setAdapter(ArrayAdapter(
+        binding.actvCategory.setAdapter(ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_dropdown_item_1line,
-            AddRecipeViewModel.CATEGORY_OPTIONS // ✅ synced: now 10 categories
+            AddRecipeViewModel.CATEGORY_OPTIONS
         ))
     }
 

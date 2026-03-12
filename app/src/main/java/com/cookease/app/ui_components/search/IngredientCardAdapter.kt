@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.cookease.app.R
+import com.cookease.app.addrecipe.IngredientItem
 import com.cookease.app.databinding.ItemIngredientCardBinding
 
 class IngredientCardAdapter(
-    private var ingredients: List<String>,
+    private var ingredients: List<IngredientItem>,
     private var selected: Set<String>,
     private val onToggle: (String) -> Unit
 ) : RecyclerView.Adapter<IngredientCardAdapter.VH>() {
@@ -23,20 +25,22 @@ class IngredientCardAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val ingredient = ingredients[position]
-        val isSelected = selected.contains(ingredient)
+        val isSelected = selected.contains(ingredient.name)
 
-        holder.binding.tvIngredientName.text = ingredient
+        holder.binding.tvIngredientName.text = ingredient.name
         holder.binding.selectedOverlay.isVisible = isSelected
 
-        Glide.with(holder.itemView.context)
-            .load(R.drawable.ic_food_placeholder)
-            .centerCrop()
-            .into(holder.binding.imgIngredient)
+        // Use Coil for better consistency with other parts of the app
+        holder.binding.imgIngredient.load(ingredient.image_url?.takeIf { it.isNotEmpty() }) {
+            placeholder(R.drawable.ic_ingredient_placeholder)
+            error(R.drawable.ic_ingredient_placeholder)
+            transformations(RoundedCornersTransformation(8f))
+        }
 
-        holder.itemView.setOnClickListener { onToggle(ingredient) }
+        holder.itemView.setOnClickListener { onToggle(ingredient.name) }
     }
 
-    fun updateData(newIngredients: List<String>, newSelected: Set<String>) {
+    fun updateData(newIngredients: List<IngredientItem>, newSelected: Set<String>) {
         ingredients = newIngredients
         selected = newSelected
         notifyDataSetChanged()

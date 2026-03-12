@@ -4,19 +4,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class IngredientItem(
-    val id: Int = 0,
+    val id: String = "", // Changed to String to handle UUIDs or numeric IDs safely
     val name: String = "",
-    val category: String = "",
-    val image_url: String = ""
+    val category: String? = null,
+    val image_url: String? = null
 )
 
 data class SelectedIngredient(
-    val id: Int,
+    val id: String,
     val name: String,
-    val image_url: String,
+    val image_url: String?,
     val qty: String = "",
     val unit: String = "pcs",
-    val prep: String = ""
+    val prep: String = "",
+    val raw: String = ""
 )
 
 sealed class SubmitState {

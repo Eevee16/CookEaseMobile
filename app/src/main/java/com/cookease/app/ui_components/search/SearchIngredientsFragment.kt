@@ -12,8 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
+import com.cookease.app.R
 import com.cookease.app.databinding.FragmentSearchIngredientsBinding
 import com.cookease.app.ui_components.recipe.RecipeAdapter
+
 class SearchIngredientsFragment : Fragment() {
 
     private var _binding: FragmentSearchIngredientsBinding? = null
@@ -40,17 +42,18 @@ class SearchIngredientsFragment : Fragment() {
         setupAdapters()
         setupObservers()
         setupListeners()
-        viewModel.fetchRecipes()
+        // fetchData() is called in ViewModel init, but we can call it again if needed
+        viewModel.fetchData()
     }
 
     private fun setupAdapters() {
-        ingredientAdapter = IngredientCardAdapter(emptyList(), emptySet()) { ingredient ->
-            viewModel.toggleIngredient(ingredient)
+        ingredientAdapter = IngredientCardAdapter(emptyList(), emptySet()) { ingredientName ->
+            viewModel.toggleIngredient(ingredientName)
         }
         binding.rvIngredients.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.rvIngredients.adapter = ingredientAdapter
 
-        recipeAdapter = RecipeAdapter { }
+        recipeAdapter = RecipeAdapter { /* handle recipe click if needed */ }
         binding.rvRecipes.layoutManager = LinearLayoutManager(requireContext())
         binding.rvRecipes.adapter = recipeAdapter
     }
@@ -75,11 +78,11 @@ class SearchIngredientsFragment : Fragment() {
             ingredientAdapter.updateData(filtered, selected)
 
             binding.chipGroupSelected.removeAllViews()
-            selected.forEach { ing ->
+            selected.forEach { ingName ->
                 val chip = Chip(requireContext()).apply {
-                    text = ing
+                    text = ingName
                     isCloseIconVisible = true
-                    setOnCloseIconClickListener { viewModel.toggleIngredient(ing) }
+                    setOnCloseIconClickListener { viewModel.toggleIngredient(ingName) }
                 }
                 binding.chipGroupSelected.addView(chip)
             }
@@ -99,6 +102,7 @@ class SearchIngredientsFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        // Keep real-time filtering but also add the button for a definite action
         binding.etIngredientSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) =
                 viewModel.filterIngredients(s?.toString() ?: "")
@@ -106,7 +110,15 @@ class SearchIngredientsFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        binding.tvClearAll.setOnClickListener { viewModel.clearAll() }
+        // Explicit search button listener
+        binding.btnSearchIngredients.setOnClickListener {
+            viewModel.filterIngredients(binding.etIngredientSearch.text.toString())
+        }
+
+        binding.tvClearAll.setOnClickListener { 
+            binding.etIngredientSearch.setText("")
+            viewModel.clearAll() 
+        }
     }
 
     override fun onDestroyView() {

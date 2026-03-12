@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cookease.app.R
+import com.cookease.app.addrecipe.AddRecipeViewModel
 import com.cookease.app.databinding.FragmentSearchBinding
 import com.cookease.app.ui_components.recipe.RecipeAdapter
 
@@ -36,15 +37,15 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             adapter = recipeAdapter
         }
 
-        // Setup spinners
-        val categories = listOf("All", "Breakfast", "Lunch", "Dinner", "Snack", "Dessert")
+        // Setup spinners with correct options from images
+        val categories = listOf("All") + AddRecipeViewModel.CATEGORY_OPTIONS
         binding.spCategory.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
             categories
         ).also { it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
 
-        val cuisines = listOf("All", "Filipino", "Italian", "Chinese", "Japanese", "American")
+        val cuisines = listOf("All") + AddRecipeViewModel.CUISINE_OPTIONS
         binding.spCuisine.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
