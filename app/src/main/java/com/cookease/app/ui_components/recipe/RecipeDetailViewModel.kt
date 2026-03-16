@@ -11,7 +11,9 @@ import com.cookease.app.SupabaseClientProvider
 import com.cookease.app.data.local.AppDatabase
 import com.cookease.app.data.repository.RecipeRepository
 import com.cookease.app.saved.SavedRecipeRepository
+import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.jsonPrimitive
 
 sealed class RecipeDetailState {
     object Loading : RecipeDetailState()
@@ -31,6 +33,9 @@ class RecipeDetailViewModel(
     private val _isSaved = MutableLiveData(false)
     val isSaved: LiveData<Boolean> = _isSaved
 
+    private val _ownerPhotoUrl = MutableLiveData<String?>(null)
+    val ownerPhotoUrl: LiveData<String?> = _ownerPhotoUrl
+
     private val _servingsMultiplier = MutableLiveData(1.0f)
     val servingsMultiplier: LiveData<Float> = _servingsMultiplier
 
@@ -44,10 +49,28 @@ class RecipeDetailViewModel(
                     _state.value = RecipeDetailState.Success(recipe)
                     checkIfSaved(id)
                     trackView(id)
+                    fetchOwnerProfile(recipe.ownerId)
                 }
                 .onFailure {
                     _state.value = RecipeDetailState.NotFound
                 }
+        }
+    }
+
+    private fun fetchOwnerProfile(ownerId: String?) {
+        if (ownerId.isNullOrBlank()) return
+        viewModelScope.launch {
+            try {
+                val client = SupabaseClientProvider.client
+                val profile = client.postgrest.from("profiles")
+                    .select { filter { eq("id", ownerId) } }
+                    .decodeSingleOrNull<Map<String, kotlinx.serialization.json.JsonElement>>()
+                
+                val photoUrl = profile?.get("photo_url")?.jsonPrimitive?.content
+                _ownerPhotoUrl.postValue(photoUrl)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

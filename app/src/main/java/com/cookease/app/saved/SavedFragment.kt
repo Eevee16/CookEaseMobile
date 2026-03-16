@@ -57,7 +57,8 @@ class SavedFragment : Fragment() {
             },
             onRemoveClick = { recipe ->
                 viewModel.removeFromSaved(recipe.id)
-            }
+            },
+            isSavedScreen = true
         )
         binding.rvSavedRecipes.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvSavedRecipes.adapter = adapter

@@ -154,22 +154,41 @@
                     tools:text="Creamy Garlic Parmesan Pasta"/>
 
                 <LinearLayout
+                    android:id="@+id/authorSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="4dp">
 
-                    <TextView
-                        android:id="@+id/tvAuthorAvatar"
+                    <FrameLayout
                         android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_circle_orange"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:fontFamily="sans-serif-black"
-                        tools:text="J"/>
+                        android:layout_height="40dp">
+
+                        <TextView
+                            android:id="@+id/tvAuthorAvatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_circle_orange"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-black"
+                            tools:text="J"/>
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivAuthorImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                            tools:src="@tools:sample/avatars"/>
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"

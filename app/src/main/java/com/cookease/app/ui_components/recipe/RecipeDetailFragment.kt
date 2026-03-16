@@ -95,6 +95,21 @@ class RecipeDetailFragment : Fragment() {
                 Snackbar.make(binding.root, "Recipe removed from favorites", Snackbar.LENGTH_SHORT).show()
             }
         }
+
+        viewModel.ownerPhotoUrl.observe(viewLifecycleOwner) { photoUrl ->
+            if (!photoUrl.isNullOrBlank()) {
+                binding.ivAuthorImage.isVisible = true
+                binding.tvAuthorAvatar.isVisible = false
+                Glide.with(this)
+                    .load(photoUrl)
+                    .placeholder(R.drawable.bg_circle_orange)
+                    .circleCrop()
+                    .into(binding.ivAuthorImage)
+            } else {
+                binding.ivAuthorImage.isVisible = false
+                binding.tvAuthorAvatar.isVisible = true
+            }
+        }
     }
 
     private fun setupListeners() {
@@ -118,6 +133,11 @@ class RecipeDetailFragment : Fragment() {
                 putExtra(Intent.EXTRA_TEXT, "Check out this recipe: ${recipe.title}")
             }
             startActivity(Intent.createChooser(intent, "Share Recipe"))
+        }
+
+        binding.authorSection.setOnClickListener {
+            // Future: Navigate to public profile of the author
+            Snackbar.make(binding.root, "Author profile coming soon!", Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -143,8 +163,11 @@ class RecipeDetailFragment : Fragment() {
 
         binding.tvCategoryLabel.text = "${recipe.cuisine ?: "World"} • ${recipe.category ?: "Main Course"}"
         binding.tvTitle.text = recipe.title
+        
+        // Initial author setup (Avatar fallback)
         binding.tvAuthorAvatar.text = recipe.ownerName?.firstOrNull()?.uppercaseChar()?.toString() ?: "U"
         binding.tvAuthorName.text = recipe.ownerName ?: "Anonymous"
+
         binding.tvDescription.text = recipe.description ?: ""
         binding.tvServings.text = (recipe.servings ?: 1).toString()
         binding.tvPrepTime.text = viewModel.formatTime(recipe.prepTime)

@@ -49,10 +49,12 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        recipeAdapter = RecipeAdapter { recipe ->
-            val action = ProfileFragmentDirections.actionProfileToRecipeDetail(recipe.id)
-            findNavController().navigate(action)
-        }
+        recipeAdapter = RecipeAdapter(
+            onRecipeClick = { recipe ->
+                val action = ProfileFragmentDirections.actionProfileToRecipeDetail(recipe.id)
+                findNavController().navigate(action)
+            }
+        )
         binding.rvUserRecipes.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvUserRecipes.adapter = recipeAdapter
     }

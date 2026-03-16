@@ -49,6 +49,43 @@
                 tools:text="Easy"
                 tools:backgroundTint="#D1FAE5"
                 tools:textColor="#065F46"/>
+
+            <!-- Offline Status Tag Overlay -->
+            <LinearLayout
+                android:id="@+id/offlineBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|start"
+                android:layout_margin="8dp"
+                android:background="@drawable/bg_tag"
+                android:backgroundTint="@color/white"
+                android:paddingStart="6dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:elevation="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/ivOfflineIcon"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_check"
+                    app:tint="@color/success"
+                    android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvOfflineStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OFFLINE"
+                    android:textSize="9sp"
+                    android:textColor="@color/success"
+                    android:fontFamily="sans-serif-black"/>
+            </LinearLayout>
         </FrameLayout>
 
         <!-- Content -->

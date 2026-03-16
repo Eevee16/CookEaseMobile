@@ -158,7 +158,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:hint="Password"
-                app:endIconMode="password_toggle">
+                app:endIconMode="password_toggle"
+                app:endIconDrawable="@drawable/sl_password_toggle">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_password"
                     style="@style/Widget.CookEase.TextInputEditText"
@@ -218,7 +219,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:hint="Confirm password"
-                app:endIconMode="password_toggle">
+                app:endIconMode="password_toggle"
+                app:endIconDrawable="@drawable/sl_password_toggle">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_confirm_password"
                     style="@style/Widget.CookEase.TextInputEditText"

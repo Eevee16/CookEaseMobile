@@ -15,7 +15,8 @@ import com.cookease.app.databinding.ItemRecipeCardBinding
 
 class RecipeAdapter(
     private val onRecipeClick: (Recipe) -> Unit = {},
-    private val onRemoveClick: ((Recipe) -> Unit)? = null
+    private val onRemoveClick: ((Recipe) -> Unit)? = null,
+    private val isSavedScreen: Boolean = false
 ) : ListAdapter<Recipe, RecipeAdapter.VH>(DiffCallback()) {
 
     inner class VH(val binding: ItemRecipeCardBinding) :
@@ -31,27 +32,32 @@ class RecipeAdapter(
         holder.binding.tvCategory.text = recipe.category?.uppercase() ?: ""
         holder.binding.tvCuisine.text = recipe.cuisine ?: ""
 
-        // Difficulty Tag - Pill style with dynamic colors
+        // Offline Indication
+        if (isSavedScreen) {
+            holder.binding.offlineBadge.visibility = View.VISIBLE
+            holder.binding.tvOfflineStatus.text = "OFFLINE READY"
+        } else {
+            holder.binding.offlineBadge.visibility = View.GONE
+        }
+
+        // Difficulty Tag
         val difficulty = recipe.difficulty ?: "Medium"
         holder.binding.tvDifficulty.text = difficulty.uppercase()
         val (bgColor, textColor) = when (difficulty.lowercase()) {
             "easy" -> Pair("#D1FAE5", "#065F46")
             "medium" -> Pair("#FEF3C7", "#92400E")
-            "hard" -> Pair("#EF4444", "#FFFFFF") // Matching the red in reference image
+            "hard" -> Pair("#EF4444", "#FFFFFF") 
             else -> Pair("#E5E7EB", "#374151")
         }
         
-        // Use backgroundTint to preserve rounded corners from XML drawable
         holder.binding.tvDifficulty.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgColor))
         holder.binding.tvDifficulty.setTextColor(Color.parseColor(textColor))
 
-        // Category Tag - Soft white style matching reference
         holder.binding.tvCategory.visibility = if (recipe.category.isNullOrBlank()) View.GONE else View.VISIBLE
 
         // Rating
         if (recipe.rating != null && recipe.rating > 0) {
-            holder.binding.tvRating.text =
-                String.format("★ %.1f", recipe.rating.toFloat())
+            holder.binding.tvRating.text = String.format("★ %.1f", recipe.rating.toFloat())
             holder.binding.tvRating.visibility = View.VISIBLE
         } else {
             holder.binding.tvRating.visibility = View.GONE
@@ -64,12 +70,10 @@ class RecipeAdapter(
             .centerCrop()
             .into(holder.binding.imgRecipe)
 
-        // Normal click
         holder.itemView.setOnClickListener {
             onRecipeClick(recipe)
         }
 
-        // Optional long press to remove (used in Saved screen)
         if (onRemoveClick != null) {
             holder.itemView.setOnLongClickListener {
                 onRemoveClick.invoke(recipe)
@@ -79,10 +83,7 @@ class RecipeAdapter(
     }
 
     class DiffCallback : DiffUtil.ItemCallback<Recipe>() {
-        override fun areItemsTheSame(old: Recipe, new: Recipe) =
-            old.id == new.id
-
-        override fun areContentsTheSame(old: Recipe, new: Recipe) =
-            old == new
+        override fun areItemsTheSame(old: Recipe, new: Recipe) = old.id == new.id
+        override fun areContentsTheSame(old: Recipe, new: Recipe) = old == new
     }
 }

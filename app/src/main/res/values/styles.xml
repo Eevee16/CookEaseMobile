@@ -88,6 +88,8 @@
         <item name="boxCornerRadiusBottomEnd">16dp</item>
         <item name="android:textColorHint">@color/gray_400</item>
         <item name="hintTextColor">@color/secondary</item>
+        <item name="endIconTint">@color/secondary</item>
+        <item name="passwordToggleTint">@color/secondary</item>
     </style>
 
     <style name="Widget.CookEase.TextInputEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
