@@ -2,67 +2,78 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient_background"
+    android:background="@color/bg_main"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
 
-        <!-- Profile Header Card -->
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Profile"
+            android:textSize="26sp"
+            android:fontFamily="sans-serif-black"
+            android:textColor="@color/text_main"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Profile Info Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
             app:cardCornerRadius="20dp"
-            app:cardElevation="8dp">
+            app:cardElevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray_100">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center_horizontal"
+                android:gravity="center"
                 android:padding="24dp">
 
-                <!-- Avatar -->
-                <ImageView
-                    android:id="@+id/profileImage"
-                    android:layout_width="88dp"
-                    android:layout_height="88dp"
-                    android:layout_marginBottom="4dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_placeholder"
-                    android:background="@drawable/bg_circle_purple"
-                    android:contentDescription="User profile image"
-                    android:visibility="gone"/>
-
-                <!-- Initials fallback -->
+                <!-- Avatar fallback -->
                 <TextView
                     android:id="@+id/tvInitials"
-                    android:layout_width="88dp"
-                    android:layout_height="88dp"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
                     android:gravity="center"
-                    android:textSize="28sp"
-                    android:textColor="@android:color/white"
-                    android:fontFamily="sans-serif-medium"
-                    android:background="@drawable/bg_circle_purple"
-                    android:layout_marginBottom="12dp"
-                    android:contentDescription="User initials"/>
+                    android:textSize="32sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="sans-serif-black"
+                    android:background="@drawable/bg_circle_orange"
+                    android:layout_marginBottom="16dp"
+                    tools:text="JD"/>
 
-                <!-- Name & Email -->
+                <!-- Profile Image -->
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_marginBottom="16dp"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    tools:src="@tools:sample/avatars"/>
+
                 <TextView
                     android:id="@+id/tvUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textColor="@color/gray_900"
-                    android:fontFamily="sans-serif-medium"
+                    android:textSize="22sp"
+                    android:textColor="@color/text_main"
+                    android:fontFamily="sans-serif-black"
                     android:layout_marginBottom="4dp"
-                    android:text="User"/>
+                    tools:text="John Doe"/>
 
                 <TextView
                     android:id="@+id/tvUserEmail"
@@ -70,10 +81,9 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textColor="@color/gray_500"
-                    android:layout_marginBottom="8dp"
-                    android:text=""/>
+                    android:layout_marginBottom="12dp"
+                    tools:text="john.doe@example.com"/>
 
-                <!-- Role badge -->
                 <TextView
                     android:id="@+id/tvRoleBadge"
                     android:layout_width="wrap_content"
@@ -82,18 +92,20 @@
                     android:paddingEnd="12dp"
                     android:paddingTop="4dp"
                     android:paddingBottom="4dp"
-                    android:textSize="12sp"
-                    android:textColor="@color/purple_primary"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-black"
+                    android:textAllCaps="true"
+                    android:textColor="@color/secondary"
                     android:background="@drawable/bg_tag"
                     android:visibility="gone"
-                    android:layout_marginBottom="16dp"/>
+                    tools:visibility="visible"
+                    tools:text="MODERATOR"/>
 
-                <!-- Action Buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginTop="24dp">
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnEditProfile"
@@ -103,7 +115,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text="Edit Profile"
-                        android:textAllCaps="false"/>
+                        android:textAllCaps="false"
+                        app:cornerRadius="10dp"
+                        app:strokeColor="@color/gray_200"
+                        android:textColor="@color/text_main"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnLogout"
@@ -111,283 +126,124 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="#DC3545"
-                        android:text="Sign Out"
-                        android:textAllCaps="false"/>
-                </LinearLayout>
-
-                <!-- Add Recipe -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnAddRecipe"
-                    style="@style/Widget.CookEase.Button.Primary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/purple_primary"
-                    android:text="➕ Add New Recipe"
-                    android:textAllCaps="false"/>
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Stats Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:weightSum="4">
-
-                <!-- Total -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <TextView
-                        android:id="@+id/tvTotalRecipes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="22sp"
-                        android:textColor="@color/gray_900"
-                        android:fontFamily="sans-serif-medium"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Total"
-                        android:textSize="11sp"
-                        android:textColor="@color/gray_500"/>
-                </LinearLayout>
-
-                <!-- Approved -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <TextView
-                        android:id="@+id/tvApprovedRecipes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="22sp"
-                        android:textColor="#155724"
-                        android:fontFamily="sans-serif-medium"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Approved"
-                        android:textSize="11sp"
-                        android:textColor="@color/gray_500"/>
-                </LinearLayout>
-
-                <!-- Pending -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <TextView
-                        android:id="@+id/tvPendingRecipes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="22sp"
-                        android:textColor="#856404"
-                        android:fontFamily="sans-serif-medium"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pending"
-                        android:textSize="11sp"
-                        android:textColor="@color/gray_500"/>
-                </LinearLayout>
-
-                <!-- Rejected -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <TextView
-                        android:id="@+id/tvRejectedRecipes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="22sp"
-                        android:textColor="#721C24"
-                        android:fontFamily="sans-serif-medium"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rejected"
-                        android:textSize="11sp"
-                        android:textColor="@color/gray_500"/>
+                        android:backgroundTint="@color/error"
+                        android:text="Sign Out"/>
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- My Recipes Section -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- Stats Bar -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginBottom="24dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="8dp">
+            android:background="@drawable/bg_stats_gray"
+            android:padding="16dp"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My Recipes"
-                    android:textSize="18sp"
-                    android:textColor="@color/gray_900"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginBottom="12dp"/>
-
-                <!-- Filter Tabs -->
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="none"
-                    android:layout_marginBottom="12dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/tabAll"
-                            style="@style/Widget.CookEase.Button.Primary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:layout_marginEnd="8dp"
-                            android:backgroundTint="@color/purple_primary"
-                            android:text="All"
-                            android:textAllCaps="false"
-                            android:textSize="13sp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/tabApproved"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:layout_marginEnd="8dp"
-                            android:text="Approved"
-                            android:textAllCaps="false"
-                            android:textSize="13sp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/tabPending"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:layout_marginEnd="8dp"
-                            android:text="Pending"
-                            android:textAllCaps="false"
-                            android:textSize="13sp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/tabRejected"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:text="Rejected"
-                            android:textAllCaps="false"
-                            android:textSize="13sp"/>
-                    </LinearLayout>
-                </HorizontalScrollView>
-
-                <!-- Empty State -->
-                <LinearLayout
-                    android:id="@+id/emptyState"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="24dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🍳"
-                        android:textSize="40sp"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:id="@+id/tvEmptyMessage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="No recipes yet"
-                        android:textSize="15sp"
-                        android:textColor="@color/gray_600"/>
-                </LinearLayout>
-
-                <!-- Recipes RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvUserRecipes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"/>
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical">
+                <TextView android:id="@+id/tvTotalRecipes" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/text_main" android:textSize="18sp" android:fontFamily="sans-serif-black" tools:text="12"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TOTAL" android:textSize="9sp" android:textColor="@color/gray_500" android:fontFamily="sans-serif-black"/>
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Moderator Section Card -->
+            <View android:layout_width="1dp" android:layout_height="24dp" android:background="@color/gray_200"/>
+
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical">
+                <TextView android:id="@+id/tvApprovedRecipes" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/success" android:textSize="18sp" android:fontFamily="sans-serif-black" tools:text="8"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="APPROVED" android:textSize="9sp" android:textColor="@color/gray_500" android:fontFamily="sans-serif-black"/>
+            </LinearLayout>
+
+            <View android:layout_width="1dp" android:layout_height="24dp" android:background="@color/gray_200"/>
+
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical">
+                <TextView android:id="@+id/tvPendingRecipes" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/warning" android:textSize="18sp" android:fontFamily="sans-serif-black" tools:text="3"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PENDING" android:textSize="9sp" android:textColor="@color/gray_500" android:fontFamily="sans-serif-black"/>
+            </LinearLayout>
+
+            <View android:layout_width="1dp" android:layout_height="24dp" android:background="@color/gray_200"/>
+
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical">
+                <TextView android:id="@+id/tvRejectedRecipes" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/error" android:textSize="18sp" android:fontFamily="sans-serif-black" tools:text="1"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="REJECTED" android:textSize="9sp" android:textColor="@color/gray_500" android:fontFamily="sans-serif-black"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Section Title & Tabs -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="My Recipes"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-black"
+                android:textColor="@color/text_main"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddRecipe"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ Add New"
+                android:textColor="@color/primary"
+                android:fontFamily="sans-serif-black"
+                android:textSize="13sp"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton android:id="@+id/tabAll" style="@style/Widget.MaterialComponents.Button.TonalButton" android:layout_width="wrap_content" android:layout_height="36dp" android:text="All" android:layout_marginEnd="8dp" android:textSize="12sp" android:textAllCaps="false" app:cornerRadius="18dp"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/tabApproved" style="@style/Widget.MaterialComponents.Button.TonalButton" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Approved" android:layout_marginEnd="8dp" android:textSize="12sp" android:textAllCaps="false" app:cornerRadius="18dp"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/tabPending" style="@style/Widget.MaterialComponents.Button.TonalButton" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Pending" android:layout_marginEnd="8dp" android:textSize="12sp" android:textAllCaps="false" app:cornerRadius="18dp"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/tabRejected" style="@style/Widget.MaterialComponents.Button.TonalButton" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Rejected" android:textSize="12sp" android:textAllCaps="false" app:cornerRadius="18dp"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvUserRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/item_recipe_card"/>
+
+        <!-- Empty State -->
+        <LinearLayout
+            android:id="@+id/emptyState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👨‍🍳" android:textSize="48sp"/>
+            <TextView android:id="@+id/tvEmptyMessage" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="You haven't added any recipes yet." android:textColor="@color/gray_500" android:textSize="14sp" android:gravity="center"/>
+        </LinearLayout>
+
+        <!-- Moderator Section -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardModeratorSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="32dp"
             android:visibility="gone"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Moderation"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/gray_900"
-                    android:layout_marginBottom="12dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnModeratorDashboard"
-                    style="@style/Widget.Material3.Button.TonalButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Moderator Dashboard"
-                    android:textAllCaps="false"
-                    app:icon="@drawable/ic_shield"
-                    app:iconGravity="start"/>
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray_100">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Admin Moderation" android:textSize="16sp" android:fontFamily="sans-serif-black" android:textColor="@color/text_main" android:layout_marginBottom="16dp"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/btnModeratorDashboard" style="@style/Widget.CookEase.Button.Primary" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Open Admin Dashboard" app:icon="@drawable/ic_shield" app:iconGravity="textStart"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

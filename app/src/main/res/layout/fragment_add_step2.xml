@@ -4,181 +4,130 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@drawable/bg_gradient_background">
+    android:background="@color/bg_main">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp"
+        android:gravity="center_horizontal">
 
-        <!-- Top Bar -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🖼️ Recipe Details"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-black"
+            android:textColor="@color/text_main"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Step 2: Media and Timing"
+            android:textColor="@color/gray_500"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Recipe Image Picker -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardImagePicker"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginBottom="32dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray_300">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+
+                <ImageView
+                    android:id="@+id/ivRecipeImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_camera"
+                    android:padding="60dp"
+                    app:tint="@color/gray_300"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <View android:layout_width="1dp" android:layout_height="40dp"/> <!-- spacer if image is null -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap to upload image"
+                        android:textColor="@color/gray_400"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Time Inputs Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="32dp">
 
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPrepTime"
+                style="@style/Widget.CookEase.TextInputLayout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/add_new_recipe"
-                android:textSize="22sp"
-                android:textColor="@color/gray_900"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"/>
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2/3"
-                android:textSize="14sp"
-                android:textColor="@color/gray_600"
-                android:fontFamily="sans-serif-medium"/>
+                android:layout_marginEnd="8dp"
+                android:hint="Prep time (min)">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPrepTime"
+                    style="@style/Widget.CookEase.TextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilCookTime"
+                style="@style/Widget.CookEase.TextInputLayout"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:hint="Cook time (min)">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCookTime"
+                    style="@style/Widget.CookEase.TextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <!-- Progress Bar -->
-        <ProgressBar
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginBottom="24dp"
-            android:max="3"
-            android:progress="2"
-            android:progressTint="@color/purple_primary"
-            android:progressBackgroundTint="@color/gray_200"/>
-
-        <!-- Form Card -->
-        <com.google.android.material.card.MaterialCardView
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNextStep2"
+            style="@style/Widget.CookEase.Button.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="8dp"
-            app:cardBackgroundColor="@color/white">
+            android:text="Continue to Step 3"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackStep2"
+            style="@style/Widget.CookEase.Button.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Go Back"/>
 
-                <!-- Recipe Image -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/recipe_image"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray_700"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginBottom="8dp"/>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginBottom="20dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="@color/gray_300">
-
-                    <ImageView
-                        android:id="@+id/ivRecipeImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_camera"
-                        android:background="@color/gray_100"
-                        android:padding="60dp"
-                        android:contentDescription="@string/recipe_image"/>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Prep Time -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/prep_time_min"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray_700"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginBottom="8dp"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPrepTime"
-                    style="@style/Widget.CookEase.TextInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:hint="@string/prep_time_min">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPrepTime"
-                        style="@style/Widget.CookEase.TextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:maxLines="1"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Cook Time -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cook_time_min"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray_700"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginBottom="8dp"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilCookTime"
-                    style="@style/Widget.CookEase.TextInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:hint="@string/cook_time_min">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etCookTime"
-                        style="@style/Widget.CookEase.TextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:maxLines="1"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Buttons Row -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnBackStep2"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/back"
-                        android:paddingTop="14dp"
-                        android:paddingBottom="14dp"/>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnNextStep2"
-                        style="@style/Widget.CookEase.Button.Primary"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:text="@string/next"
-                        android:backgroundTint="@color/purple_primary"/>
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 </ScrollView>

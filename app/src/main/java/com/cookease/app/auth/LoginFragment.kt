@@ -1,7 +1,6 @@
-package com.cookease.app.ui.auth
+package com.cookease.app.auth
 
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: AuthViewModel by viewModels()
-    private var isPasswordVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,9 +39,9 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupViews() {
-        binding.tilPassword.setEndIconOnClickListener {
-            togglePasswordVisibility()
-        }
+        // Material Components handles the eye icon toggle automatically 
+        // when endIconMode="password_toggle" is set in XML.
+        // If the icon doesn't appear, ensure the tint doesn't match the background.
 
         binding.etEmail.addTextChangedListener {
             binding.cardError.visibility = View.GONE
@@ -130,18 +128,6 @@ class LoginFragment : Fragment() {
 
         binding.cardError.visibility = View.GONE
         viewModel.login(email, password)
-    }
-
-    private fun togglePasswordVisibility() {
-        isPasswordVisible = !isPasswordVisible
-        if (isPasswordVisible) {
-            binding.etPassword.transformationMethod = null
-            binding.tilPassword.setEndIconDrawable(R.drawable.ic_eye_visible)
-        } else {
-            binding.etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-            binding.tilPassword.setEndIconDrawable(R.drawable.ic_eye_hidden)
-        }
-        binding.etPassword.setSelection(binding.etPassword.text?.length ?: 0)
     }
 
     private fun showForgotPasswordDialog() {

@@ -1,4 +1,4 @@
-package com.cookease.app.ui.auth
+package com.cookease.app.auth
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -125,7 +125,7 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 _authState.value = AuthState.Loading
-                // Updated parameter name to 'redirectUrl' for Supabase SDK 2.x compatibility
+                // Updated redirectUrl to match the deep link configuration in AndroidManifest.xml
                 SupabaseClientProvider.client.auth.resetPasswordForEmail(
                     email = email,
                     redirectUrl = "cookease://reset-password"

@@ -6,13 +6,14 @@
     <!-- ====================== -->
 
     <style name="TextAppearance.Logo" parent="TextAppearance.MaterialComponents.Headline4">
-        <item name="android:textColor">@color/orange_primary</item>
+        <item name="android:textColor">@color/primary</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">32sp</item>
+        <item name="fontFamily">sans-serif-black</item>
     </style>
 
     <style name="TextAppearance.Subtitle" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="android:textColor">@color/gray_600</item>
+        <item name="android:textColor">@color/gray_500</item>
         <item name="android:textSize">16sp</item>
     </style>
 
@@ -22,7 +23,7 @@
     </style>
 
     <style name="TextAppearance.Link" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="android:textColor">@color/purple_primary</item>
+        <item name="android:textColor">@color/secondary</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -32,60 +33,83 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <!-- Required by TabLayout in fragment_recipe_detail.xml -->
     <style name="TextAppearance.Tab" parent="TextAppearance.MaterialComponents.Button">
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">false</item>
     </style>
 
     <!-- ====================== -->
     <!-- Buttons                -->
     <!-- ====================== -->
 
+    <!-- Primary Action (Login, Signup, Submit) - Matches Web Indigo -->
     <style name="Widget.CookEase.Button.Primary" parent="Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">@color/purple_primary</item>
+        <item name="android:backgroundTint">@color/secondary</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:paddingTop">14dp</item>
         <item name="android:paddingBottom">14dp</item>
-        <item name="cornerRadius">@dimen/radius_medium</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
+    <!-- Brand Action (Search button, some headers) - Matches Web Orange -->
     <style name="Widget.CookEase.Button.Orange" parent="Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">@color/orange_primary</item>
+        <item name="android:backgroundTint">@color/primary</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:paddingTop">14dp</item>
         <item name="android:paddingBottom">14dp</item>
-        <item name="cornerRadius">10dp</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="textAllCaps">false</item>
     </style>
 
     <style name="Widget.CookEase.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/purple_primary</item>
+        <item name="android:textColor">@color/secondary</item>
         <item name="android:textSize">14sp</item>
+        <item name="textAllCaps">false</item>
     </style>
 
     <!-- ========================= -->
     <!-- TextInputLayout           -->
-    <!-- FIX: boxStrokeColor must  -->
-    <!-- use a plain color here,   -->
-    <!-- NOT a color selector ref  -->
     <!-- ========================= -->
 
     <style name="Widget.CookEase.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor">@color/white</item>
-        <item name="boxStrokeColor">@color/purple_primary</item>
+        <item name="boxStrokeColor">@color/gray_300</item>
         <item name="boxStrokeWidth">1dp</item>
-        <item name="boxCornerRadiusTopStart">@dimen/radius_medium</item>
-        <item name="boxCornerRadiusTopEnd">@dimen/radius_medium</item>
-        <item name="boxCornerRadiusBottomStart">@dimen/radius_medium</item>
-        <item name="boxCornerRadiusBottomEnd">@dimen/radius_medium</item>
-        <item name="android:textColorHint">@color/gray_500</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="android:textColorHint">@color/gray_400</item>
+        <item name="hintTextColor">@color/secondary</item>
     </style>
 
     <style name="Widget.CookEase.TextInputEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_main</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+
+    <!-- ========================= -->
+    <!-- CardView Style            -->
+    <!-- ========================= -->
+    <style name="Widget.CookEase.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">2dp</item>
+    </style>
+
+    <!-- ========================= -->
+    <!-- Shape Appearances         -->
+    <!-- ========================= -->
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
     </style>
 
 </resources>

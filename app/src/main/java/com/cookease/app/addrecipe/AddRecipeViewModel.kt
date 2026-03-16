@@ -1,6 +1,7 @@
 package com.cookease.app.addrecipe
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +12,7 @@ import com.cookease.app.data.local.AppDatabase
 import com.cookease.app.saved.toEntity
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonPrimitive
 import java.text.SimpleDateFormat
@@ -81,6 +82,26 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
         _submitState.value = SubmitState.Idle
     }
 
+    private suspend fun uploadImage(uriString: String, recipeId: String): String? {
+        val uri = Uri.parse(uriString)
+        if (uri.scheme != "content") return uriString // Already a URL or non-content URI
+
+        return try {
+            val bytes = getApplication<Application>().contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                ?: return null
+            
+            val fileName = "recipe_$recipeId.jpg"
+            val filePath = "recipe_images/$fileName"
+            
+            val client = SupabaseClientProvider.client
+            client.storage.from("recipes").upload(filePath, bytes, upsert = true)
+            client.storage.from("recipes").publicUrl(filePath)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     fun submitRecipe() {
         val currentUser = SupabaseClientProvider.client.auth.currentUserOrNull()
         val userId = currentUser?.id
@@ -93,6 +114,11 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             try {
                 _submitState.value = SubmitState.Loading
+
+                val recipeId = existingRecipeId ?: UUID.randomUUID().toString()
+                
+                // Upload image if it's a local URI
+                val finalImageUrl = imageUri.value?.let { uploadImage(it, recipeId) } ?: imageUri.value
 
                 // Fetch current user's display name or email for 'owner_name'
                 val ownerName = try {
@@ -125,7 +151,7 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
 
                 // 3. Create Recipe Object
                 val recipe = Recipe(
-                    id = existingRecipeId ?: UUID.randomUUID().toString(),
+                    id = recipeId,
                     title = recipeName.value?.trim() ?: "Untitled Recipe",
                     description = description.value?.trim(),
                     category = category.value,
@@ -134,11 +160,11 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
                     servings = servings.value?.toIntOrNull() ?: 1,
                     prepTime = prepTime.value?.toIntOrNull() ?: 0,
                     cookTime = cookTime.value?.toIntOrNull() ?: 0,
-                    imageUrl = imageUri.value,
+                    imageUrl = finalImageUrl,
                     rating = 0.0,
                     status = "pending",
                     ownerId = userId,
-                    ownerName = ownerName, // ✅ Now sending the owner name
+                    ownerName = ownerName,
                     createdAt = originalCreatedAt ?: currentTime,
                     ingredients = ings,
                     instructions = insts,

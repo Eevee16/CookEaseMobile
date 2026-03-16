@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.cookease.app.R
 import com.cookease.app.databinding.FragmentAddStep1Binding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 
 class RecipeStep1Fragment : Fragment() {
 
@@ -110,18 +110,18 @@ class RecipeStep1Fragment : Fragment() {
 
         // ✅ synced: validate against full 16-item CUISINE_OPTIONS
         if (!AddRecipeViewModel.CUISINE_OPTIONS.contains(cuisineSelected)) {
-            Toast.makeText(requireContext(), "Please select a cuisine", Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, "Please select a cuisine", Snackbar.LENGTH_SHORT).show()
             hasError = true
         }
 
         // ✅ synced: validate against full 10-item CATEGORY_OPTIONS
         if (!AddRecipeViewModel.CATEGORY_OPTIONS.contains(categorySelected)) {
-            Toast.makeText(requireContext(), "Please select a category", Toast.LENGTH_SHORT).show()
+            if (!hasError) Snackbar.make(binding.root, "Please select a category", Snackbar.LENGTH_SHORT).show()
             hasError = true
         }
 
         if (difficulty.isEmpty()) {
-            Toast.makeText(requireContext(), "Please select a difficulty level", Toast.LENGTH_SHORT).show()
+            if (!hasError) Snackbar.make(binding.root, "Please select a difficulty level", Snackbar.LENGTH_SHORT).show()
             hasError = true
         }
 

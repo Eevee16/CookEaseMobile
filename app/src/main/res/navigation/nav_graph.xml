@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.cookease.app.ui.auth.LoginFragment"
+        android:name="com.cookease.app.auth.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/signupFragment"
-        android:name="com.cookease.app.ui.auth.SignupFragment"
+        android:name="com.cookease.app.auth.SignupFragment"
         android:label="Sign Up"
         tools:layout="@layout/fragment_signup">
         <action
@@ -56,7 +56,7 @@
 
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.cookease.app.ui.auth.ResetPasswordFragment"
+        android:name="com.cookease.app.auth.ResetPasswordFragment"
         android:label="Reset Password"
         tools:layout="@layout/fragment_reset_password">
         <action
@@ -191,10 +191,19 @@
             android:id="@+id/action_profile_to_recipeDetail"
             app:destination="@id/recipeDetailFragment"/>
         <action
+            android:id="@+id/action_profile_to_editProfile"
+            app:destination="@id/editProfileFragment"/>
+        <action
             android:id="@+id/action_profile_to_login"
             app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.cookease.app.profile.EditProfileFragment"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_edit_profile"/>
 
 </navigation>

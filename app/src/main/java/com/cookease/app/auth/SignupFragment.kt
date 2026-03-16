@@ -1,4 +1,4 @@
-package com.cookease.app.ui.auth
+package com.cookease.app.auth
 
 import android.graphics.Color
 import android.net.Uri
@@ -134,10 +134,14 @@ class SignupFragment : Fragment() {
 
         // Animate strength bar width
         val strengthBar = binding.strengthBar
-        val params = strengthBar.layoutParams
-        params.width = (strengthBar.parent as View).width.times(barWidth).toInt()
-        strengthBar.layoutParams = params
-        strengthBar.setBackgroundColor(color)
+        val parent = strengthBar.parent as View
+        val parentWidth = parent.width
+        if (parentWidth > 0) {
+            val params = strengthBar.layoutParams
+            params.width = (parentWidth * barWidth).toInt()
+            strengthBar.layoutParams = params
+        }
+        strengthBar.progress = score
     }
 
     private fun handleSignup() {
@@ -305,11 +309,11 @@ class SignupFragment : Fragment() {
 
     private fun showError(message: String) {
         binding.tvErrorMessage.text = message
-        binding.tvErrorMessage.visibility = View.VISIBLE
+        binding.cardError.visibility = View.VISIBLE
     }
 
     private fun hideError() {
-        binding.tvErrorMessage.visibility = View.GONE
+        binding.cardError.visibility = View.GONE
     }
 
     override fun onDestroyView() {

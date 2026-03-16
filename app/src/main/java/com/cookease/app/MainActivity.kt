@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.cookease.app.ui.auth.AuthViewModel
+import com.cookease.app.auth.AuthViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.launch

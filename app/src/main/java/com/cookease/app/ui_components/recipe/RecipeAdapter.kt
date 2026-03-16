@@ -1,5 +1,6 @@
 package com.cookease.app.ui_components.recipe
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -27,20 +28,25 @@ class RecipeAdapter(
         val recipe = getItem(position)
 
         holder.binding.tvRecipeTitle.text = recipe.title
-        holder.binding.tvCategory.text = recipe.category ?: ""
+        holder.binding.tvCategory.text = recipe.category?.uppercase() ?: ""
         holder.binding.tvCuisine.text = recipe.cuisine ?: ""
 
-        // Difficulty
+        // Difficulty Tag - Pill style with dynamic colors
         val difficulty = recipe.difficulty ?: "Medium"
-        holder.binding.tvDifficulty.text = difficulty
+        holder.binding.tvDifficulty.text = difficulty.uppercase()
         val (bgColor, textColor) = when (difficulty.lowercase()) {
             "easy" -> Pair("#D1FAE5", "#065F46")
             "medium" -> Pair("#FEF3C7", "#92400E")
-            "hard" -> Pair("#FEE2E2", "#991B1B")
+            "hard" -> Pair("#EF4444", "#FFFFFF") // Matching the red in reference image
             else -> Pair("#E5E7EB", "#374151")
         }
-        holder.binding.tvDifficulty.setBackgroundColor(Color.parseColor(bgColor))
+        
+        // Use backgroundTint to preserve rounded corners from XML drawable
+        holder.binding.tvDifficulty.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgColor))
         holder.binding.tvDifficulty.setTextColor(Color.parseColor(textColor))
+
+        // Category Tag - Soft white style matching reference
+        holder.binding.tvCategory.visibility = if (recipe.category.isNullOrBlank()) View.GONE else View.VISIBLE
 
         // Rating
         if (recipe.rating != null && recipe.rating > 0) {

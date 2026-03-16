@@ -47,11 +47,11 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun setupViews() {
-        // Pre-fill current data
+        // Pre-fill current data from User object
         viewModel.user.value?.let { user ->
-            val names = user.name.split(" ", limit = 2)
-            binding.etFirstName.setText(names.getOrNull(0) ?: "")
-            binding.etLastName.setText(names.getOrNull(1) ?: "")
+            binding.etDisplayName.setText(user.name)
+            binding.etFirstName.setText(user.firstName)
+            binding.etLastName.setText(user.lastName)
             
             Glide.with(this)
                 .load(user.photoUrl)
@@ -72,14 +72,16 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun saveProfile() {
+        val displayName = binding.etDisplayName.text.toString().trim()
         val firstName = binding.etFirstName.text.toString().trim()
         val lastName = binding.etLastName.text.toString().trim()
 
-        if (firstName.isEmpty()) {
-            binding.tilFirstName.error = "First name is required"
+        // Validation - at least some name is needed
+        if (displayName.isEmpty() && firstName.isEmpty()) {
+            binding.tilDisplayName.error = "Please provide a display name or first name"
             return
         }
-        binding.tilFirstName.error = null
+        binding.tilDisplayName.error = null
 
         binding.loadingOverlay.isVisible = true
         
@@ -87,12 +89,16 @@ class EditProfileFragment : Fragment() {
         var mimeType: String? = null
         
         selectedImageUri?.let { uri ->
-            val contentResolver = requireContext().contentResolver
-            imageBytes = contentResolver.openInputStream(uri)?.readBytes()
-            mimeType = contentResolver.getType(uri)
+            try {
+                val contentResolver = requireContext().contentResolver
+                imageBytes = contentResolver.openInputStream(uri)?.readBytes()
+                mimeType = contentResolver.getType(uri)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
-        viewModel.updateProfile(firstName, lastName, imageBytes, mimeType)
+        viewModel.updateProfile(firstName, lastName, displayName, imageBytes, mimeType)
     }
 
     private fun setupObservers() {

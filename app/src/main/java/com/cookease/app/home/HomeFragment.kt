@@ -4,16 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cookease.app.R
 import com.cookease.app.Resource
 import com.cookease.app.databinding.FragmentHomeBinding
 import com.cookease.app.ui_components.recipe.RecipeAdapter
+import com.cookease.app.utils.ConnectivityObserver
+import com.cookease.app.utils.NetworkConnectivityObserver
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -22,6 +29,7 @@ class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var recipeAdapter: RecipeAdapter
+    private lateinit var connectivityObserver: NetworkConnectivityObserver
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,9 +43,13 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        connectivityObserver = NetworkConnectivityObserver(requireContext())
+        
         setupRecyclerView()
         setupSearch()
         setupObservers()
+        setupListeners()
+        setupConnectivityObserver()
 
         viewModel.fetchApprovedRecipes()
     }
@@ -54,7 +66,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSearch() {
-        // Search on button click
         binding.searchButton.setOnClickListener {
             val query = binding.searchEditText.text.toString().trim()
             if (query.isNotEmpty()) {
@@ -64,10 +75,36 @@ class HomeFragment : Fragment() {
             }
         }
 
-        // Clear search when text is cleared
         binding.searchEditText.addTextChangedListener { text ->
             if (text.isNullOrEmpty()) {
                 viewModel.fetchApprovedRecipes()
+            }
+        }
+    }
+
+    private fun setupListeners() {
+        binding.btnHideError.setOnClickListener {
+            binding.cardError.isVisible = false
+        }
+    }
+
+    private fun setupConnectivityObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                connectivityObserver.observe().collectLatest { status ->
+                    when (status) {
+                        ConnectivityObserver.Status.Lost, ConnectivityObserver.Status.Unavailable -> {
+                            showBannerError("App is offline. Check your connection.")
+                        }
+                        ConnectivityObserver.Status.Available -> {
+                            if (binding.cardError.isVisible && binding.tvErrorMessage.text.toString().contains("offline", ignoreCase = true)) {
+                                binding.cardError.isVisible = false
+                                viewModel.fetchApprovedRecipes()
+                            }
+                        }
+                        else -> {}
+                    }
+                }
             }
         }
     }
@@ -76,31 +113,35 @@ class HomeFragment : Fragment() {
         viewModel.recipes.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Resource.Loading -> {
-                    binding.loadingProgress.visibility = View.VISIBLE
-                    binding.rvRecipes.visibility = View.GONE
-                    binding.emptyState.visibility = View.GONE
+                    binding.loadingProgress.isVisible = true
+                    binding.rvRecipes.isVisible = false
+                    binding.emptyState.isVisible = false
+                    binding.cardError.isVisible = false
                 }
                 is Resource.Success -> {
-                    binding.loadingProgress.visibility = View.GONE
-                    binding.rvRecipes.visibility = View.VISIBLE
+                    binding.loadingProgress.isVisible = false
+                    binding.rvRecipes.isVisible = true
                     recipeAdapter.submitList(result.data)
-                    binding.emptyState.visibility =
-                        if (result.data.isNullOrEmpty()) View.VISIBLE else View.GONE
+                    binding.emptyState.isVisible = result.data.isNullOrEmpty()
+                    binding.cardError.isVisible = false
                 }
                 is Resource.Error -> {
-                    binding.loadingProgress.visibility = View.GONE
-                    binding.rvRecipes.visibility = View.GONE
+                    binding.loadingProgress.isVisible = false
+                    binding.rvRecipes.isVisible = false
                     
-                    // Improved error handling for offline state
-                    val errorMsg = if (result.message?.contains("Unable to resolve host", ignoreCase = true) == true) {
-                        "App is offline. Check your connection."
+                    if (!connectivityObserver.isCurrentlyConnected()) {
+                        showBannerError("App is offline. Check your connection.")
                     } else {
-                        result.message ?: "Failed to load recipes"
+                        showBannerError(result.message ?: "Failed to load recipes")
                     }
-                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
                 }
             }
         }
+    }
+
+    private fun showBannerError(message: String) {
+        binding.tvErrorMessage.text = message
+        binding.cardError.isVisible = true
     }
 
     override fun onDestroyView() {

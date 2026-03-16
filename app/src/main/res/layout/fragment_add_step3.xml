@@ -4,99 +4,72 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@drawable/bg_gradient_background">
+    android:background="@color/bg_main">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp"
+        android:gravity="center_horizontal">
 
-        <!-- Top Bar -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="20dp">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/add_new_recipe"
-                android:textSize="22sp"
-                android:textColor="@color/gray_900"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3/3"
-                android:textSize="14sp"
-                android:textColor="@color/gray_600"
-                android:fontFamily="sans-serif-medium"/>
-        </LinearLayout>
+            android:text="🥗 Ingredients &amp; Steps"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-black"
+            android:textColor="@color/text_main"
+            android:layout_marginBottom="8dp"/>
 
-        <!-- Progress Bar -->
-        <ProgressBar
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginBottom="24dp"
-            android:max="3"
-            android:progress="3"
-            android:progressTint="@color/purple_primary"
-            android:progressBackgroundTint="@color/gray_200"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Step 3: Building your recipe"
+            android:textColor="@color/gray_500"
+            android:layout_marginBottom="32dp"/>
 
-        <!-- Ingredients Card -->
+        <!-- Ingredients Section -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             app:cardCornerRadius="20dp"
-            app:cardElevation="8dp"
-            app:cardBackgroundColor="@color/white">
+            app:cardElevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray_100">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="16dp">
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/ingredients"
+                        android:text="Ingredients"
                         android:textSize="18sp"
-                        android:textColor="@color/gray_900"
-                        android:fontFamily="sans-serif-medium"/>
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/text_main"/>
                     <TextView
                         android:id="@+id/tvIngredientCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0 selected"
-                        android:textSize="13sp"
-                        android:textColor="@color/purple_primary"/>
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/primary"/>
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvIngredientsError"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/error"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    android:layout_marginBottom="8dp"
-                    android:text="Add at least one ingredient"/>
-
-                <!-- Search with explicit button -->
+                <!-- Search -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -111,43 +84,45 @@
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
                         android:hint="Search ingredients..."
-                        app:startIconDrawable="@drawable/ic_search">
+                        app:startIconDrawable="@android:drawable/ic_menu_search">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etIngredientSearch"
                             style="@style/Widget.CookEase.TextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:maxLines="1"/>
+                            android:inputType="text"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnSearchIngredientsAdd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="56dp"
-                        android:text="Search"
+                        android:layout_width="54dp"
+                        android:layout_height="54dp"
+                        android:padding="0dp"
+                        app:icon="@android:drawable/ic_menu_search"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
                         app:cornerRadius="12dp"
-                        android:backgroundTint="@color/purple_primary"/>
+                        android:backgroundTint="@color/secondary"/>
                 </LinearLayout>
 
-                <!-- Search Results -->
+                <!-- Results -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvIngredientResults"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxHeight="220dp"
-                    android:nestedScrollingEnabled="false"/>
+                    android:maxHeight="200dp"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginBottom="12dp"/>
 
-                <!-- Selected Ingredients -->
+                <!-- Selected List -->
                 <TextView
                     android:id="@+id/tvSelectedLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Selected"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray_700"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginTop="16dp"
+                    android:text="SELECTED"
+                    android:textSize="10sp"
+                    android:fontFamily="sans-serif-black"
+                    android:textColor="@color/gray_500"
                     android:layout_marginBottom="8dp"
                     android:visibility="gone"/>
 
@@ -156,102 +131,105 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"/>
+
+                <TextView
+                    android:id="@+id/tvIngredientsError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="At least one ingredient is required"
+                    android:textColor="@color/error"
+                    android:textSize="12sp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"/>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Instructions Card -->
+        <!-- Instructions Section -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="32dp"
             app:cardCornerRadius="20dp"
-            app:cardElevation="8dp"
-            app:cardBackgroundColor="@color/white">
+            app:cardElevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray_100">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="16dp">
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/instructions"
+                        android:text="Preparation Steps"
                         android:textSize="18sp"
-                        android:textColor="@color/gray_900"
-                        android:fontFamily="sans-serif-medium"/>
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/text_main"/>
                     <TextView
                         android:id="@+id/tvStepCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0 steps"
-                        android:textSize="13sp"
-                        android:textColor="@color/purple_primary"/>
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/primary"/>
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvInstructionsError"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/error"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    android:layout_marginBottom="8dp"
-                    android:text="Add at least one instruction step"/>
-
-                <!-- Dynamic steps go here via RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvInstructionSteps"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"/>
 
-                <!-- Add Step Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAddStep"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="+ Add Step"
-                    android:textAllCaps="false"/>
+                    android:text="+ Add Direction Step"
+                    android:textAllCaps="false"
+                    android:textColor="@color/secondary"
+                    app:strokeColor="@color/gray_200"
+                    app:cornerRadius="10dp"/>
+
+                <TextView
+                    android:id="@+id/tvInstructionsError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Please provide directions for your recipe"
+                    android:textColor="@color/error"
+                    android:textSize="12sp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"/>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Action Buttons -->
-        <LinearLayout
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDone"
+            style="@style/Widget.CookEase.Button.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnBackStep3"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:text="@string/back"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"/>
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDone"
-                style="@style/Widget.CookEase.Button.Primary"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="@string/submit_recipe"
-                android:backgroundTint="@color/purple_primary"/>
-        </LinearLayout>
+            android:text="Publish Recipe"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackStep3"
+            style="@style/Widget.CookEase.Button.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Go Back"/>
 
     </LinearLayout>
 </ScrollView>

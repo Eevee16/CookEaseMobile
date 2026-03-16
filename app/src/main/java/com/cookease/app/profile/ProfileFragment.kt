@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.cookease.app.R
 import com.cookease.app.databinding.FragmentProfileBinding
-import com.cookease.app.ui.auth.AuthViewModel
+import com.cookease.app.auth.AuthViewModel
 import com.cookease.app.ui_components.recipe.RecipeAdapter
 import com.cookease.app.viewmodels.ProfileViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -65,7 +65,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setActiveTab(tab: String) {
-        val activeColor = resources.getColor(R.color.purple_primary, null)
+        val activeColor = resources.getColor(R.color.secondary, null)
         val white = resources.getColor(android.R.color.white, null)
         val transparent = resources.getColor(android.R.color.transparent, null)
 
@@ -102,7 +102,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.btnEditProfile.setOnClickListener {
-            // TODO: Navigate to edit profile fragment
+            findNavController().navigate(R.id.action_profile_to_editProfile)
         }
     }
 
@@ -138,7 +138,7 @@ class ProfileFragment : Fragment() {
         profileViewModel.role.observe(viewLifecycleOwner) { role ->
             if (!role.isNullOrBlank()) {
                 binding.tvRoleBadge.isVisible = true
-                binding.tvRoleBadge.text = when (role) {
+                binding.tvRoleBadge.text = when (role.lowercase()) {
                     "moderator" -> "⭐ Moderator"
                     "admin" -> "🛡 Admin"
                     else -> "👤 User"

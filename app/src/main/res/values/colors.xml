@@ -1,55 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand: Orange -->
-    <color name="orange_primary">#F97316</color>
-    <color name="orange_light">#FB923C</color>
-    <color name="orange_dark">#EA580C</color>
-    <color name="orange_bg">#FFF7ED</color>
-
-    <!-- Brand: Purple -->
-    <color name="purple_primary">#667EEA</color>
-    <color name="purple_secondary">#764BA2</color>
-
-    <!-- Grays -->
-    <color name="gray_900">#111827</color>
-    <color name="gray_800">#1F2937</color>
-    <color name="gray_700">#374151</color>
-    <color name="gray_600">#6B7280</color>
-    <color name="gray_500">#9CA3AF</color>
-    <color name="gray_400">#D1D5DB</color>
-    <color name="gray_300">#E5E7EB</color>
-    <color name="gray_200">#F3F4F6</color>
-    <color name="gray_100">#F9FAFB</color>
-
-    <!-- Status -->
-    <color name="success">#10B981</color>
-    <color name="success_light">#D1FAE5</color>
-    <color name="warning">#F59E0B</color>
-    <color name="warning_light">#FEF3C7</color>
-    <color name="error">#DC2626</color>
-    <color name="error_light">#FEE2E2</color>
+    <!-- Brand Colors (from Web) -->
+    <color name="primary">#F97316</color> <!-- orange-600 -->
+    <color name="primary_dark">#EA580C</color> <!-- orange-700 -->
+    <color name="primary_light">#FB923C</color> <!-- orange-400 -->
+    <color name="secondary">#6366F1</color> <!-- indigo-500 (web buttons) -->
+    <color name="secondary_dark">#4F46E5</color> <!-- indigo-600 -->
 
     <!-- Backgrounds -->
-    <color name="background_primary">#FFFFFF</color>
-    <color name="background_secondary">#F9FAFB</color>
+    <color name="bg_main">#F9FAFB</color> <!-- gray-50 -->
+    <color name="bg_card">#FFFFFF</color>
+    <color name="background">@color/bg_main</color>
+    <color name="orange_bg">#FFF7ED</color> <!-- orange-50 -->
 
-    <color name="text_primary">#000000</color>
-    <color name="primary">#FF6F00</color>
-    <color name="primary_dark">#E65100</color>
-    <color name="background">#FFFFFF</color>
-    <color name="divider">#E0E0E0</color>
-    <color name="gray">#757575</color>
-    <color name="amber_500">#FFC107</color>
-    <color name="red_300">#E57373</color>
-    <color name="teal_700">#00796B</color>
-    <color name="green_300">#81C784</color>
+    <!-- Text Colors -->
+    <color name="text_main">#111827</color> <!-- gray-900 -->
+    <color name="text_muted">#6B7280</color> <!-- gray-500 -->
+    <color name="text_white">#FFFFFF</color>
 
+    <!-- Grays -->
+    <color name="gray">#9CA3AF</color> <!-- gray-400 -->
+    <color name="gray_50">#F9FAFB</color>
+    <color name="gray_100">#F3F4F6</color>
+    <color name="gray_200">#E5E7EB</color>
+    <color name="gray_300">#D1D5DB</color>
+    <color name="gray_400">#9CA3AF</color>
+    <color name="gray_500">#6B7280</color>
+    <color name="gray_600">#4B5563</color>
+    <color name="gray_700">#374151</color>
+    <color name="gray_800">#1F2937</color>
+    <color name="gray_900">#111827</color>
 
-    <color name="text_secondary">#757575</color>
+    <!-- UI States -->
+    <color name="success">#10B981</color>
+    <color name="success_light">#D1FAE5</color>
+    <color name="error">#EF4444</color>
+    <color name="error_light">#FEE2E2</color>
+    <color name="warning">#F59E0B</color>
+    <color name="warning_light">#FEF3C7</color>
+    <color name="info">#3B82F6</color>
 
-    <color name="star_yellow">#FFC107</color>
+    <!-- Specific Palette Colors -->
+    <color name="amber_500">#F59E0B</color>
+    <color name="red_300">#FCA5A5</color>
+    <color name="green_300">#86EFAC</color>
+    <color name="teal_700">#0F766E</color>
+    <color name="purple_secondary">#A855F7</color>
 
-    <!-- Base -->
+    <!-- UI Elements -->
+    <color name="divider">@color/gray_200</color>
+
+    <!-- Legacy / Compatibility -->
+    <color name="orange_primary">@color/primary</color>
+    <color name="orange_dark">@color/primary_dark</color>
+    <color name="purple_primary">@color/secondary</color>
+    <color name="background_secondary">@color/bg_main</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="text_primary">@color/text_main</color>
+    <color name="text_secondary">@color/text_muted</color>
 </resources>

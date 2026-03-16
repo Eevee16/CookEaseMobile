@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cookease.app.R
 import com.cookease.app.Recipe
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ModeratorDashboardFragment : Fragment() {
@@ -35,6 +37,13 @@ class ModeratorDashboardFragment : Fragment() {
     private lateinit var tabPending: MaterialButton
     private lateinit var tabApproved: MaterialButton
     private lateinit var tabRejected: MaterialButton
+
+    private lateinit var cardError: MaterialCardView
+    private lateinit var tvErrorMessage: TextView
+    private lateinit var btnHideError: ImageButton
+    private lateinit var cardSuccess: MaterialCardView
+    private lateinit var tvSuccessMessage: TextView
+    private lateinit var btnHideSuccess: ImageButton
 
     private var activeTab = "pending"
 
@@ -61,9 +70,17 @@ class ModeratorDashboardFragment : Fragment() {
         tabApproved = view.findViewById(R.id.tabApproved)
         tabRejected = view.findViewById(R.id.tabRejected)
 
+        cardError = view.findViewById(R.id.cardError)
+        tvErrorMessage = view.findViewById(R.id.tvErrorMessage)
+        btnHideError = view.findViewById(R.id.btnHideError)
+        cardSuccess = view.findViewById(R.id.cardSuccess)
+        tvSuccessMessage = view.findViewById(R.id.tvSuccessMessage)
+        btnHideSuccess = view.findViewById(R.id.btnHideSuccess)
+
         setupRecyclerView()
         setupTabs()
         setupObservers()
+        setupListeners()
 
         viewModel.fetchRecipes()
     }
@@ -71,7 +88,6 @@ class ModeratorDashboardFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = ModeratorAdapter(emptyList(), object : ModeratorAdapter.RecipeActionListener {
             override fun onView(recipe: Recipe) {
-                // Navigate to Recipe Detail from Moderator Dashboard
                 val action = ModeratorDashboardFragmentDirections.actionModeratorDashboardFragmentToRecipeDetailFragment(recipe.id)
                 findNavController().navigate(action)
             }
@@ -113,6 +129,11 @@ class ModeratorDashboardFragment : Fragment() {
         tabRejected.setOnClickListener { switchTab("rejected") }
     }
 
+    private fun setupListeners() {
+        btnHideError.setOnClickListener { cardError.isVisible = false }
+        btnHideSuccess.setOnClickListener { cardSuccess.isVisible = false }
+    }
+
     private fun switchTab(tab: String) {
         activeTab = tab
         updateTabStyles()
@@ -139,13 +160,13 @@ class ModeratorDashboardFragment : Fragment() {
     private fun showList(list: List<Recipe>) {
         adapter.updateRecipes(list, activeTab)
         if (list.isEmpty()) {
-            recyclerView.visibility = View.GONE
-            emptyState.visibility = View.VISIBLE
+            recyclerView.isVisible = false
+            emptyState.isVisible = true
             tvEmptyMessage.text = "No $activeTab recipes"
-            tvEmptyHint.visibility = if (activeTab == "pending") View.VISIBLE else View.GONE
+            tvEmptyHint.isVisible = activeTab == "pending"
         } else {
-            recyclerView.visibility = View.VISIBLE
-            emptyState.visibility = View.GONE
+            recyclerView.isVisible = true
+            emptyState.isVisible = false
         }
     }
 
@@ -153,18 +174,19 @@ class ModeratorDashboardFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ModeratorState.Loading -> {
-                    loadingProgress.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                    emptyState.visibility = View.GONE
+                    loadingProgress.isVisible = true
+                    recyclerView.isVisible = false
+                    emptyState.isVisible = false
+                    cardError.isVisible = false
                 }
                 is ModeratorState.Success -> {
-                    loadingProgress.visibility = View.GONE
+                    loadingProgress.isVisible = false
                     updateStats()
                     updateListForTab()
                 }
                 is ModeratorState.Error -> {
-                    loadingProgress.visibility = View.GONE
-                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                    loadingProgress.isVisible = false
+                    showBannerError(state.message)
                 }
                 else -> {}
             }
@@ -172,13 +194,29 @@ class ModeratorDashboardFragment : Fragment() {
 
         viewModel.actionState.observe(viewLifecycleOwner) { state ->
             when (state) {
+                is ModeratorState.Success -> {
+                    showBannerSuccess("Action successful")
+                    viewModel.resetActionState()
+                }
                 is ModeratorState.Error -> {
-                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                    showBannerError(state.message)
                     viewModel.resetActionState()
                 }
                 else -> {}
             }
         }
+    }
+
+    private fun showBannerError(message: String) {
+        tvErrorMessage.text = message
+        cardError.isVisible = true
+        cardSuccess.isVisible = false
+    }
+
+    private fun showBannerSuccess(message: String) {
+        tvSuccessMessage.text = message
+        cardSuccess.isVisible = true
+        cardError.isVisible = false
     }
 
     private fun updateStats() {
@@ -199,7 +237,7 @@ class ModeratorDashboardFragment : Fragment() {
             .setPositiveButton("Confirm Rejection") { _, _ ->
                 val reason = etReason.text.toString().trim()
                 if (reason.isEmpty()) {
-                    Toast.makeText(requireContext(), "Please provide a rejection reason", Toast.LENGTH_SHORT).show()
+                    showBannerError("Please provide a rejection reason")
                 } else {
                     viewModel.rejectRecipe(recipe.id, reason)
                 }
