@@ -24,17 +24,17 @@ data class Recipe(
     @SerialName("image_url")
     val imageUrl: String? = null,
     val image: String? = null,
-    val rating: Double? = null,
+    val rating: Double? = 0.0,
     val difficulty: String? = "Medium",
     val cuisine: String? = null,
     val category: String? = null,
-    val servings: Int? = null,
+    val servings: Int? = 1,
     @SerialName("prepTime")
-    val prepTime: Int? = null,
+    val prepTime: Int? = 0,
     @SerialName("cookTime")
-    val cookTime: Int? = null,
+    val cookTime: Int? = 0,
     val notes: String? = null,
-    val slug: String = "",
+    val slug: String? = "",
 
     @Serializable(with = FlexibleStringListSerializer::class)
     val ingredients: List<String> = emptyList(),
@@ -42,14 +42,14 @@ data class Recipe(
     val instructions: List<String> = emptyList(),
 
     @SerialName("views")
-    val views: Int? = null,
+    val views: Int? = 0,
     @SerialName("view_count")
-    val viewCount: Int? = null,
+    val viewCount: Int? = 0,
     @SerialName("owner_id")
     val ownerId: String? = null,
     @SerialName("owner_name")
     val ownerName: String? = null,
-    val status: String? = null,
+    val status: String? = "pending",
     @SerialName("rejection_reason")
     val rejectionReason: String? = null,
     @SerialName("created_at")
@@ -76,7 +76,7 @@ object FlexibleStringListSerializer : KSerializer<List<String>> {
                     } catch (e: Exception) {
                         listOf(content)
                     }
-                } else if (content.isBlank()) {
+                } else if (content.isBlank() || content == "null") {
                     emptyList()
                 } else {
                     listOf(content)

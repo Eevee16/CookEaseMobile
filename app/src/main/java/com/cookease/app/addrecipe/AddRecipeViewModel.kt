@@ -13,6 +13,7 @@ import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.jsonPrimitive
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -81,7 +82,9 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun submitRecipe() {
-        val userId = SupabaseClientProvider.client.auth.currentUserOrNull()?.id
+        val currentUser = SupabaseClientProvider.client.auth.currentUserOrNull()
+        val userId = currentUser?.id
+        
         if (userId == null) {
             _submitState.value = SubmitState.Error("You must be logged in to add a recipe")
             return
@@ -90,6 +93,21 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             try {
                 _submitState.value = SubmitState.Loading
+
+                // Fetch current user's display name or email for 'owner_name'
+                val ownerName = try {
+                    val profile = SupabaseClientProvider.client.postgrest.from("profiles")
+                        .select { filter { eq("id", userId) } }
+                        .decodeSingleOrNull<Map<String, String>>()
+                    
+                    val firstName = profile?.get("first_name") ?: currentUser.userMetadata?.get("first_name")?.jsonPrimitive?.content ?: ""
+                    val lastName = profile?.get("last_name") ?: currentUser.userMetadata?.get("last_name")?.jsonPrimitive?.content ?: ""
+                    val fullName = "$firstName $lastName".trim()
+                    
+                    fullName.ifBlank { currentUser.email?.substringBefore("@") ?: "Unknown" }
+                } catch (e: Exception) {
+                    currentUser.email?.substringBefore("@") ?: "Unknown"
+                }
 
                 // 1. Prepare formatted strings
                 val ings = _selectedIngredients.value?.map {
@@ -120,6 +138,7 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
                     rating = 0.0,
                     status = "pending",
                     ownerId = userId,
+                    ownerName = ownerName, // ✅ Now sending the owner name
                     createdAt = originalCreatedAt ?: currentTime,
                     ingredients = ings,
                     instructions = insts,

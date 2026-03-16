@@ -28,6 +28,7 @@ sealed class AuthState {
     object Loading : AuthState()
     data class Success(val user: AuthUser) : AuthState()
     data class Error(val message: String) : AuthState()
+    data class PasswordResetSent(val message: String) : AuthState()
 }
 
 // ==================== VIEWMODEL ====================
@@ -123,8 +124,16 @@ class AuthViewModel : ViewModel() {
     fun sendPasswordReset(email: String) {
         viewModelScope.launch {
             try {
-                SupabaseClientProvider.client.auth.resetPasswordForEmail(email)
-            } catch (_: Exception) { }
+                _authState.value = AuthState.Loading
+                // Updated parameter name to 'redirectUrl' for Supabase SDK 2.x compatibility
+                SupabaseClientProvider.client.auth.resetPasswordForEmail(
+                    email = email,
+                    redirectUrl = "cookease://reset-password"
+                )
+                _authState.value = AuthState.PasswordResetSent("Password reset email sent! Check your inbox.")
+            } catch (e: Exception) {
+                _authState.value = AuthState.Error("Failed to send reset link: ${e.message}")
+            }
         }
     }
 

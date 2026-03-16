@@ -1,5 +1,6 @@
 package com.cookease.app
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +29,9 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNav.setupWithNavController(navController)
+
+        // Handle Deep Link for Password Reset
+        handleIntent(intent)
 
         // Handle Add button (middle nav item)
         bottomNav.setOnItemSelectedListener { item ->
@@ -67,6 +71,24 @@ class MainActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        val appLinkAction = intent?.action
+        val appLinkData = intent?.data
+        if (Intent.ACTION_VIEW == appLinkAction && appLinkData != null) {
+            // Check if it's our password reset deep link
+            if (appLinkData.scheme == "cookease" && appLinkData.host == "reset-password") {
+                val navHostFragment = supportFragmentManager
+                    .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                navHostFragment.navController.navigate(R.id.resetPasswordFragment)
             }
         }
     }
