@@ -55,7 +55,10 @@ data class Recipe(
     @SerialName("created_at")
     val createdAt: String? = null,
     @SerialName("updated_at")
-    val updatedAt: String? = null
+    val updatedAt: String? = null,
+    
+    // New field for download status
+    val isDownloaded: Boolean = false
 ) : Parcelable
 
 object FlexibleStringListSerializer : KSerializer<List<String>> {

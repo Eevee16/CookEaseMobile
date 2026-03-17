@@ -14,7 +14,7 @@ import com.cookease.app.Recipe
 import com.cookease.app.databinding.ItemRecipeCardBinding
 
 class RecipeAdapter(
-    private val onRecipeClick: (Recipe) -> Unit = {},
+    private val onRecipeClick: (Recipe) -> Unit = { _ -> },
     private val onRemoveClick: ((Recipe) -> Unit)? = null,
     private val isSavedScreen: Boolean = false
 ) : ListAdapter<Recipe, RecipeAdapter.VH>(DiffCallback()) {
@@ -32,8 +32,8 @@ class RecipeAdapter(
         holder.binding.tvCategory.text = recipe.category?.uppercase() ?: ""
         holder.binding.tvCuisine.text = recipe.cuisine ?: ""
 
-        // Offline Indication
-        if (isSavedScreen) {
+        // Offline Indication - Only show if isSavedScreen AND isDownloaded is true
+        if (isSavedScreen && recipe.isDownloaded) {
             holder.binding.offlineBadge.visibility = View.VISIBLE
             holder.binding.tvOfflineStatus.text = "OFFLINE READY"
         } else {

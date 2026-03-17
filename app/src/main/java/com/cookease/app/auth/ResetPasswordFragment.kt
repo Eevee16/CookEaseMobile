@@ -1,4 +1,4 @@
-package com.cookease.app.ui.auth
+package com.cookease.app.auth
 
 import android.os.Bundle
 import android.text.Editable

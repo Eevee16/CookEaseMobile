@@ -50,7 +50,10 @@ class ModeratorAdapter(
 
         holder.tvTitle.text = recipe.title
         holder.tvCategory.text = recipe.category ?: "N/A"
-        holder.tvOwner.text = "By ${recipe.ownerName ?: "Unknown"}"
+        
+        // Show owner name (prefers ownerName from recipe which should be populated by the backend join)
+        holder.tvOwner.text = "By ${recipe.ownerName ?: "Anonymous"}"
+        
         holder.tvDate.text = formatDate(recipe.createdAt)
 
         holder.ivThumbnail.load(recipe.imageUrl?.ifEmpty { null }) {

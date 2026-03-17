@@ -53,7 +53,7 @@ class SearchIngredientsFragment : Fragment() {
         binding.rvIngredients.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.rvIngredients.adapter = ingredientAdapter
 
-        recipeAdapter = RecipeAdapter(onRecipeClick = { /* handle recipe click if needed */ })
+        recipeAdapter = RecipeAdapter(onRecipeClick = { _ -> /* handle recipe click if needed */ })
         binding.rvRecipes.layoutManager = LinearLayoutManager(requireContext())
         binding.rvRecipes.adapter = recipeAdapter
     }

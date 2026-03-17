@@ -11,7 +11,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.cookease.app.auth.AuthViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.gotrue.user.UserSession
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -84,11 +87,55 @@ class MainActivity : AppCompatActivity() {
         val appLinkAction = intent?.action
         val appLinkData = intent?.data
         if (Intent.ACTION_VIEW == appLinkAction && appLinkData != null) {
-            // Check if it's our password reset deep link
             if (appLinkData.scheme == "cookease" && appLinkData.host == "reset-password") {
+                
                 val navHostFragment = supportFragmentManager
                     .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-                navHostFragment.navController.navigate(R.id.resetPasswordFragment)
+                val navController = navHostFragment.navController
+
+                // Extract tokens from the fragment part of the URL (#access_token=...)
+                val fragment = appLinkData.fragment
+                if (!fragment.isNullOrEmpty()) {
+                    val params = fragment.split("&").associate {
+                        val parts = it.split("=")
+                        parts[0] to (parts.getOrNull(1) ?: "")
+                    }
+                    
+                    val accessToken = params["access_token"]
+                    val refreshToken = params["refresh_token"]
+                    
+                    if (!accessToken.isNullOrEmpty()) {
+                        lifecycleScope.launch {
+                            try {
+                                // 1. Create and import the session
+                                val session = UserSession(
+                                    accessToken = accessToken,
+                                    refreshToken = refreshToken ?: "",
+                                    expiresIn = 3600,
+                                    tokenType = "bearer",
+                                    user = null
+                                )
+                                SupabaseClientProvider.client.auth.importSession(session)
+                                
+                                // 2. Critical: Fetch user info so 'modifyUser' has a valid 'sub' (User ID)
+                                SupabaseClientProvider.client.auth.retrieveUserForCurrentSession(updateSession = true)
+                                
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate(R.id.resetPasswordFragment)
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate(R.id.resetPasswordFragment)
+                                }
+                            }
+                        }
+                    } else {
+                        navController.navigate(R.id.resetPasswordFragment)
+                    }
+                } else {
+                    navController.navigate(R.id.resetPasswordFragment)
+                }
             }
         }
     }

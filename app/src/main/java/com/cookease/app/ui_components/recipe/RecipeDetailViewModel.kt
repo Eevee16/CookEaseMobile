@@ -77,7 +77,16 @@ class RecipeDetailViewModel(
     private fun checkIfSaved(id: String) {
         viewModelScope.launch {
             savedRepository.getSavedRecipes().collect { savedList ->
-                _isSaved.postValue(savedList.any { it.id == id })
+                val recipe = savedList.find { it.id == id }
+                _isSaved.postValue(recipe != null)
+                
+                // If the recipe is in the local DB, update its download status in the state
+                if (recipe != null) {
+                    val currentState = _state.value
+                    if (currentState is RecipeDetailState.Success) {
+                        _state.postValue(RecipeDetailState.Success(recipe))
+                    }
+                }
             }
         }
     }
@@ -100,6 +109,13 @@ class RecipeDetailViewModel(
                 savedRepository.addToSaved(recipe)
                 _isSaved.postValue(true)
             }
+        }
+    }
+
+    fun markAsDownloaded(id: String) {
+        viewModelScope.launch {
+            savedRepository.updateDownloadStatus(id, true)
+            // The checkIfSaved observer will pick up the change and update the UI
         }
     }
 

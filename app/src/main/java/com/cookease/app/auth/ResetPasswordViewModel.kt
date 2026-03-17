@@ -1,4 +1,4 @@
-package com.cookease.app.ui.auth
+package com.cookease.app.auth
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -27,7 +27,6 @@ class ResetPasswordViewModel(context: Context) : ViewModel() {
 
     fun calculateStrength(password: String) {
         var score = 0
-        if (password.length >= 6) score++
         if (password.length >= 8) score++
         if (password.contains(Regex("[A-Z]"))) score++
         if (password.contains(Regex("[a-z]"))) score++
@@ -43,10 +42,12 @@ class ResetPasswordViewModel(context: Context) : ViewModel() {
     }
 
     fun validateAndReset(password: String, confirm: String) {
-        if (password.length < 6) {
-            _state.value = ResetPasswordState.Error("Password must be at least 6 characters")
+        val validationError = validatePassword(password)
+        if (validationError != null) {
+            _state.value = ResetPasswordState.Error(validationError)
             return
         }
+        
         if (password != confirm) {
             _state.value = ResetPasswordState.Error("Passwords do not match")
             return
@@ -57,11 +58,22 @@ class ResetPasswordViewModel(context: Context) : ViewModel() {
                 SupabaseClientProvider.client.auth.modifyUser {
                     this.password = password
                 }
-                SupabaseClientProvider.client.auth.signOut() // match web behavior
+                SupabaseClientProvider.client.auth.signOut()
                 _state.value = ResetPasswordState.Success
             } catch (e: Exception) {
                 _state.value = ResetPasswordState.Error(e.message ?: "Unknown error")
             }
+        }
+    }
+
+    private fun validatePassword(password: String): String? {
+        return when {
+            password.length < 8 -> "Password must be at least 8 characters"
+            !password.contains(Regex("[A-Z]")) -> "Password must contain at least one uppercase letter"
+            !password.contains(Regex("[a-z]")) -> "Password must contain at least one lowercase letter"
+            !password.contains(Regex("[0-9]")) -> "Password must contain at least one number"
+            !password.contains(Regex("[@$!%*?&]")) -> "Password must contain at least one special character (@$!%*?&)"
+            else -> null
         }
     }
 }

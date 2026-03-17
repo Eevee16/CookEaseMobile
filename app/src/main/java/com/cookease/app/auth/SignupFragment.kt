@@ -100,7 +100,6 @@ class SignupFragment : Fragment() {
      */
     private fun calculatePasswordStrength(password: String): Int {
         var score = 0
-        if (password.length >= 6) score++
         if (password.length >= 8) score++
         if (password.contains(Regex("[A-Z]"))) score++  // Uppercase
         if (password.contains(Regex("[a-z]"))) score++  // Lowercase
@@ -188,8 +187,8 @@ class SignupFragment : Fragment() {
         }
 
         // ── Password rules (matching web) ─────────────────────────────
-        if (password.length < 6) {
-            showError("Password must be at least 6 characters long.")
+        if (password.length < 8) {
+            showError("Password must be at least 8 characters long.")
             return
         }
 
@@ -204,6 +203,10 @@ class SignupFragment : Fragment() {
         }
         if (!password.contains(Regex("\\d"))) {
             showError("Password must include at least one number.")
+            return
+        }
+        if (!password.contains(Regex("[@$!%*?&]"))) {
+            showError("Password must include at least one special character (@$!%*?&).")
             return
         }
 

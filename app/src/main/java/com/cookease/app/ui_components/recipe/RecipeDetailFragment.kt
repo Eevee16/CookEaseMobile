@@ -74,25 +74,18 @@ class RecipeDetailFragment : Fragment() {
         }
 
         viewModel.isSaved.observe(viewLifecycleOwner) { saved ->
-            binding.btnSave.text = if (saved) "✓ Saved" else "🔖 Save Recipe"
+            binding.btnSave.text = if (saved) "Saved" else "Save Recipe"
+            
+            // Hide download button if not bookmarked
             binding.btnDownload.isVisible = saved
 
-            // Navigate to saved page if user just saved the recipe
+            // If it was just saved, we show a message.
             if (saved && justSavedRecipe) {
-                justSavedRecipe = false // Reset flag
-                Snackbar.make(binding.root, "Recipe saved!", Snackbar.LENGTH_SHORT).show()
-
-                // Navigate to saved recipes page
-                try {
-                    findNavController().navigate(R.id.nav_saved)
-                } catch (e: Exception) {
-                    // Navigation failed, stay on current page
-                    e.printStackTrace()
-                }
-            } else if (!saved && justSavedRecipe) {
-                // Recipe was unsaved
                 justSavedRecipe = false
-                Snackbar.make(binding.root, "Recipe removed from favorites", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Recipe bookmarked!", Snackbar.LENGTH_SHORT).show()
+            } else if (!saved && justSavedRecipe) {
+                justSavedRecipe = false
+                Snackbar.make(binding.root, "Removed from bookmarks", Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -116,27 +109,47 @@ class RecipeDetailFragment : Fragment() {
         binding.btnBack.setOnClickListener { findNavController().navigateUp() }
 
         binding.btnSave.setOnClickListener {
-            justSavedRecipe = true // Set flag before toggling
+            justSavedRecipe = true
             viewModel.toggleSaved()
-            // Message and navigation handled in isSaved observer
         }
 
         binding.btnDownload.setOnClickListener {
-            Snackbar.make(binding.root, "Recipe downloaded for offline use", Snackbar.LENGTH_SHORT).show()
+            val currentState = viewModel.state.value
+            if (currentState is RecipeDetailState.Success) {
+                viewModel.markAsDownloaded(currentState.recipe.id)
+                Snackbar.make(binding.root, "Recipe available offline!", Snackbar.LENGTH_SHORT).show()
+                binding.btnDownload.setImageResource(android.R.drawable.checkbox_on_background)
+                binding.btnDownload.isEnabled = false
+            }
         }
 
         binding.btnShare.setOnClickListener {
             val recipe = (viewModel.state.value as? RecipeDetailState.Success)?.recipe ?: return@setOnClickListener
+            
+            val shareText = """
+                Check out this delicious recipe on CookEase!
+                
+                ${recipe.title}
+                ${recipe.description ?: ""}
+                
+                Ingredients:
+                ${recipe.ingredients.joinToString("\n• ", prefix = "• ")}
+                
+                Instructions:
+                ${recipe.instructions.mapIndexed { index, s -> "${index + 1}. $s" }.joinToString("\n")}
+                
+                Download CookEase to discover more recipes!
+            """.trimIndent()
+
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_TITLE, recipe.title)
-                putExtra(Intent.EXTRA_TEXT, "Check out this recipe: ${recipe.title}")
+                putExtra(Intent.EXTRA_SUBJECT, "Recipe: ${recipe.title}")
+                putExtra(Intent.EXTRA_TEXT, shareText)
             }
-            startActivity(Intent.createChooser(intent, "Share Recipe"))
+            startActivity(Intent.createChooser(intent, "Share Recipe via"))
         }
 
         binding.authorSection.setOnClickListener {
-            // Future: Navigate to public profile of the author
             Snackbar.make(binding.root, "Author profile coming soon!", Snackbar.LENGTH_SHORT).show()
         }
     }
@@ -153,7 +166,6 @@ class RecipeDetailFragment : Fragment() {
             .centerCrop()
             .into(binding.imgRecipe)
 
-        // Rating safe display
         recipe.rating?.let {
             if (it > 0.0) {
                 binding.ratingBadge.isVisible = true
@@ -164,7 +176,6 @@ class RecipeDetailFragment : Fragment() {
         binding.tvCategoryLabel.text = "${recipe.cuisine ?: "World"} • ${recipe.category ?: "Main Course"}"
         binding.tvTitle.text = recipe.title
         
-        // Initial author setup (Avatar fallback)
         binding.tvAuthorAvatar.text = recipe.ownerName?.firstOrNull()?.uppercaseChar()?.toString() ?: "U"
         binding.tvAuthorName.text = recipe.ownerName ?: "Anonymous"
 
@@ -178,15 +189,20 @@ class RecipeDetailFragment : Fragment() {
         binding.tabLayout.getTabAt(2)?.view?.isVisible = !recipe.notes.isNullOrBlank()
         binding.btnEdit.isVisible = false
 
-        // Ingredients (List<String>)
-        val ingredients = recipe.ingredients
         binding.rvIngredients.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvIngredients.adapter = IngredientAdapter(ingredients)
+        binding.rvIngredients.adapter = IngredientAdapter(recipe.ingredients)
 
-        // Instructions (List<String>)
-        val instructions = recipe.instructions
         binding.rvInstructions.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvInstructions.adapter = InstructionAdapter(instructions)
+        binding.rvInstructions.adapter = InstructionAdapter(recipe.instructions)
+        
+        // Setup download button state based on recipe status
+        if (recipe.isDownloaded) {
+            binding.btnDownload.setImageResource(android.R.drawable.checkbox_on_background)
+            binding.btnDownload.isEnabled = false
+        } else {
+            binding.btnDownload.setImageResource(R.drawable.ic_download)
+            binding.btnDownload.isEnabled = true
+        }
     }
 
     private fun showLoading() {

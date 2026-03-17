@@ -83,6 +83,10 @@ class SavedRecipeRepository(
             Resource.Success(Unit)
         }
     }
+
+    suspend fun updateDownloadStatus(recipeId: String, downloaded: Boolean) {
+        db.savedRecipeDao().updateDownloadStatus(recipeId, downloaded)
+    }
 }
 
 data class SavedRecipeRow(val recipe_id: String)
@@ -102,7 +106,8 @@ fun RecipeEntity.toRecipe() = Recipe(
     createdAt = createdAt,
     description = description,
     ingredients = ingredients?.split("||") ?: emptyList(),   // String → List<String>
-    instructions = instructions?.split("||") ?: emptyList()
+    instructions = instructions?.split("||") ?: emptyList(),
+    isDownloaded = isDownloaded
 )
 
 fun Recipe.toEntity() = RecipeEntity(
@@ -116,5 +121,6 @@ fun Recipe.toEntity() = RecipeEntity(
     createdAt = createdAt,
     description = description,
     ingredients = ingredients.joinToString("||"),   // List<String> → String
-    instructions = instructions.joinToString("||")
+    instructions = instructions.joinToString("||"),
+    isDownloaded = isDownloaded
 )

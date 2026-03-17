@@ -20,4 +20,7 @@ interface SavedRecipeDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM saved_recipes WHERE id = :recipeId)")
     suspend fun isRecipeSaved(recipeId: String): Boolean
+
+    @Query("UPDATE saved_recipes SET isDownloaded = :downloaded WHERE id = :recipeId")
+    suspend fun updateDownloadStatus(recipeId: String, downloaded: Boolean)
 }

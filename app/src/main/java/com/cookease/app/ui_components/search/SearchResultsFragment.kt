@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cookease.app.databinding.FragmentSearchResultsBinding
@@ -37,7 +38,12 @@ class SearchResultsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recipeAdapter = RecipeAdapter { }
+        recipeAdapter = RecipeAdapter(
+            onRecipeClick = { recipe ->
+                val action = SearchResultsFragmentDirections.actionSearchResultsToRecipeDetail(recipe.id)
+                findNavController().navigate(action)
+            }
+        )
         binding.rvRecipes.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvRecipes.adapter = recipeAdapter
 

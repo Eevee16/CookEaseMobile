@@ -16,5 +16,6 @@ data class RecipeEntity(
     val description: String?,
     val ingredients: String?,
     val instructions: String?,
-    val savedAt: Long = System.currentTimeMillis()
+    val savedAt: Long = System.currentTimeMillis(),
+    val isDownloaded: Boolean = false
 )
