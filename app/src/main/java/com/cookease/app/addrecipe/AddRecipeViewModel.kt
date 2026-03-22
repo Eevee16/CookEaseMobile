@@ -89,10 +89,10 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
         return try {
             val bytes = getApplication<Application>().contentResolver.openInputStream(uri)?.use { it.readBytes() }
                 ?: return null
-            
+
             val fileName = "recipe_$recipeId.jpg"
             val filePath = "recipe_images/$fileName"
-            
+
             val client = SupabaseClientProvider.client
             client.storage.from("recipes").upload(filePath, bytes, upsert = true)
             client.storage.from("recipes").publicUrl(filePath)
@@ -105,7 +105,7 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
     fun submitRecipe() {
         val currentUser = SupabaseClientProvider.client.auth.currentUserOrNull()
         val userId = currentUser?.id
-        
+
         if (userId == null) {
             _submitState.value = SubmitState.Error("You must be logged in to add a recipe")
             return
@@ -116,7 +116,7 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
                 _submitState.value = SubmitState.Loading
 
                 val recipeId = existingRecipeId ?: UUID.randomUUID().toString()
-                
+
                 // Upload image if it's a local URI
                 val finalImageUrl = imageUri.value?.let { uploadImage(it, recipeId) } ?: imageUri.value
 
@@ -125,11 +125,11 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
                     val profile = SupabaseClientProvider.client.postgrest.from("profiles")
                         .select { filter { eq("id", userId) } }
                         .decodeSingleOrNull<Map<String, String>>()
-                    
+
                     val firstName = profile?.get("first_name") ?: currentUser.userMetadata?.get("first_name")?.jsonPrimitive?.content ?: ""
                     val lastName = profile?.get("last_name") ?: currentUser.userMetadata?.get("last_name")?.jsonPrimitive?.content ?: ""
                     val fullName = "$firstName $lastName".trim()
-                    
+
                     fullName.ifBlank { currentUser.email?.substringBefore("@") ?: "Unknown" }
                 } catch (e: Exception) {
                     currentUser.email?.substringBefore("@") ?: "Unknown"
@@ -137,7 +137,7 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
 
                 // 1. Prepare formatted strings
                 val ings = _selectedIngredients.value?.map {
-                    if (it.raw.isNotBlank()) it.raw 
+                    if (it.raw.isNotBlank()) it.raw
                     else "${it.qty} ${it.unit} ${it.name}${if (it.prep.isNotBlank()) " (${it.prep})" else ""}".trim()
                 } ?: emptyList()
 
@@ -179,7 +179,7 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
                 } else {
                     SupabaseClientProvider.client.postgrest["recipes"].insert(recipe)
                 }
-                
+
                 // 5. Save locally for offline access
                 db.savedRecipeDao().insertRecipe(recipe.toEntity())
 
@@ -233,16 +233,16 @@ class AddRecipeViewModel(application: Application) : AndroidViewModel(applicatio
     companion object {
         val UNITS = listOf("pcs", "cups", "tbsp", "tsp", "g", "kg", "ml", "L", "oz", "lb", "to taste")
         val PREP_SUGGESTIONS = listOf("minced", "chopped", "sliced", "diced", "peeled", "grated")
-        
+
         val CUISINE_OPTIONS = listOf(
-            "Italian", "Chinese", "Indian", "Mexican", "Japanese", 
-            "French", "Thai", "Greek", "Spanish", "Turkish", 
-            "Korean", "Vietnamese", "American", "Mediterranean", "Moroccan", "British"
+            "Filipino", "Chinese", "Japanese", "Korean", "Thai", "Vietnamese",
+            "Indian", "Italian", "French", "American", "Mexican", "Spanish",
+            "Greek", "Middle Eastern", "African", "Fusion"
         )
-        
+
         val CATEGORY_OPTIONS = listOf(
-            "Breakfast", "Lunch", "Dinner", "Snack", "Dessert", 
-            "Salad", "Soup", "Drink", "Appetizer", "Main Course"
+            "Breakfast", "Lunch", "Dinner", "Dessert", "Snacks",
+            "Appetizer", "Soup", "Salad", "Beverage", "Side Dish"
         )
     }
 }

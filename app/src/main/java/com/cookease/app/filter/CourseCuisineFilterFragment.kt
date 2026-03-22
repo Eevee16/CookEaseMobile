@@ -26,8 +26,15 @@ class CourseCuisineFilterFragment : Fragment(R.layout.fragment_filter) {
         cuisineSpinner = view.findViewById(R.id.spCuisine)
         resultTextView = view.findViewById(R.id.tvResultCount)
 
-        val categories = listOf("All", "Breakfast", "Lunch", "Dinner", "Snack", "Dessert")
-        val cuisines = listOf("All", "Filipino", "Italian", "American", "Japanese", "Chinese")
+        val categories = listOf(
+            "All", "Breakfast", "Lunch", "Dinner", "Dessert", "Snacks",
+            "Appetizer", "Soup", "Salad", "Beverage", "Side Dish"
+        )
+        val cuisines = listOf(
+            "All", "Filipino", "Chinese", "Japanese", "Korean", "Thai", "Vietnamese",
+            "Indian", "Italian", "French", "American", "Mexican", "Spanish",
+            "Greek", "Middle Eastern", "African", "Fusion"
+        )
 
         val categoryAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories)
         categorySpinner.adapter = categoryAdapter
