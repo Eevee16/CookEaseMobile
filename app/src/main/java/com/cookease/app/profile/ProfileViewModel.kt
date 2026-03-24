@@ -36,6 +36,9 @@ class ProfileViewModel : ViewModel() {
     private val _role = MutableLiveData<String?>(null)
     val role: LiveData<String?> = _role
 
+    private val _isCurrentUser = MutableLiveData<Boolean>(true)
+    val isCurrentUser: LiveData<Boolean> = _isCurrentUser
+
     private val _updateResult = MutableLiveData<Result<Unit>>()
     val updateResult: LiveData<Result<Unit>> = _updateResult
 
@@ -45,7 +48,7 @@ class ProfileViewModel : ViewModel() {
         // Automatically fetch data when session becomes available
         viewModelScope.launch {
             SupabaseClientProvider.client.auth.sessionStatus.collectLatest { status ->
-                if (status is SessionStatus.Authenticated) {
+                if (status is SessionStatus.Authenticated && _user.value == null) {
                     fetchUserData()
                 }
             }
@@ -67,37 +70,34 @@ class ProfileViewModel : ViewModel() {
 
     // ── Fetch ─────────────────────────────────────────────────────────
 
-    fun fetchUserData() {
+    fun fetchUserData(targetUserId: String? = null) {
         viewModelScope.launch {
             try {
                 val client = SupabaseClientProvider.client
-                val currentUser = client.auth.currentUserOrNull() ?: return@launch
+                val currentUserId = client.auth.currentUserOrNull()?.id
+                val userId = targetUserId ?: currentUserId ?: return@launch
+                
+                _isCurrentUser.value = userId == currentUserId
 
                 // Fetch profile safely
                 val profile = try {
                     client.postgrest.from("profiles")
                         .select {
-                            filter { eq("id", currentUser.id) }
+                            filter { eq("id", userId) }
                         }.decodeSingleOrNull<Map<String, kotlinx.serialization.json.JsonElement>>()
                 } catch (e: Exception) {
                     e.printStackTrace()
                     null
                 }
 
-                val meta = currentUser.userMetadata
-
-                val firstName = profile?.get("first_name")?.jsonPrimitive?.content
-                    ?: meta?.get("first_name")?.jsonPrimitive?.content ?: ""
-                val lastName = profile?.get("last_name")?.jsonPrimitive?.content
-                    ?: meta?.get("last_name")?.jsonPrimitive?.content ?: ""
+                val firstName = profile?.get("first_name")?.jsonPrimitive?.content ?: ""
+                val lastName = profile?.get("last_name")?.jsonPrimitive?.content ?: ""
                 val customDisplayName = profile?.get("name")?.jsonPrimitive?.content
                 
                 val fullName = if (!customDisplayName.isNullOrBlank()) {
                     customDisplayName
                 } else {
-                    "$firstName $lastName".trim().ifBlank {
-                        currentUser.email?.substringBefore("@") ?: "User"
-                    }
+                    "$firstName $lastName".trim().ifBlank { "User" }
                 }
                 
                 val photoUrl = profile?.get("photo_url")?.jsonPrimitive?.content
@@ -105,18 +105,23 @@ class ProfileViewModel : ViewModel() {
 
                 _role.value = role
                 _user.value = User(
-                    id = currentUser.id,
+                    id = userId,
                     name = fullName,
                     firstName = firstName,
                     lastName = lastName,
-                    email = currentUser.email ?: "",
+                    email = if (userId == currentUserId) client.auth.currentUserOrNull()?.email ?: "" else "",
                     photoUrl = photoUrl
                 )
 
                 val recipes = try {
                     client.postgrest.from("recipes")
                         .select {
-                            filter { eq("owner_id", currentUser.id) }
+                            filter { 
+                                eq("owner_id", userId)
+                                if (userId != currentUserId) {
+                                    eq("status", "approved")
+                                }
+                            }
                         }
                         .decodeList<Recipe>()
                 } catch (e: Exception) {

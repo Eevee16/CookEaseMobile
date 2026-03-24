@@ -59,6 +59,10 @@ class HomeFragment : Fragment() {
             onRecipeClick = { recipe ->
                 val action = HomeFragmentDirections.actionHomeToRecipeDetail(recipe.id)
                 findNavController().navigate(action)
+            },
+            onAuthorClick = { userId ->
+                val action = HomeFragmentDirections.actionHomeToProfile(userId)
+                findNavController().navigate(action)
             }
         )
         binding.rvRecipes.layoutManager = GridLayoutManager(requireContext(), 2)

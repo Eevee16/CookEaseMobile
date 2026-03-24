@@ -53,13 +53,19 @@ class HomeRepository {
                 if (profile != null) {
                     val firstName = profile["first_name"] ?: ""
                     val lastName = profile["last_name"] ?: ""
-                    val fullName = "$firstName $lastName".trim()
+                    val customName = profile["name"]
+                    
+                    val firstLast = "$firstName $lastName".trim()
+                    val fullName = if (!customName.isNullOrBlank()) customName else firstLast
                     
                     recipe.copy(
-                        ownerName = fullName.ifBlank { profile["email"]?.substringBefore("@") } ?: recipe.ownerName
+                        ownerName = if (fullName.isNotBlank()) fullName else (profile["email"]?.substringBefore("@") ?: "Chef"),
+                        ownerPhotoUrl = profile["photo_url"]
                     )
                 } else {
-                    recipe
+                    // Fallback: handle cases where owner_name might be an email
+                    val cleanedName = if (recipe.ownerName?.contains("@") == true) "Chef" else recipe.ownerName
+                    recipe.copy(ownerName = cleanedName ?: "Chef")
                 }
             }
         } catch (e: Exception) {

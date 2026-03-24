@@ -29,6 +29,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 // Navigate to Recipe Detail
                 val action = SearchFragmentDirections.actionSearchToRecipeDetail(recipe.id)
                 findNavController().navigate(action)
+            },
+            onAuthorClick = { userId ->
+                val action = SearchFragmentDirections.actionSearchToProfile(userId)
+                findNavController().navigate(action)
             }
         )
 

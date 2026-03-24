@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.cookease.app.databinding.ItemRecipeCardBinding
 
 class RecipeAdapter(
     private val onRecipeClick: (Recipe) -> Unit = { _ -> },
+    private val onAuthorClick: ((String) -> Unit)? = null,
     private val onRemoveClick: ((Recipe) -> Unit)? = null,
     private val isSavedScreen: Boolean = false
 ) : ListAdapter<Recipe, RecipeAdapter.VH>(DiffCallback()) {
@@ -61,6 +63,28 @@ class RecipeAdapter(
             holder.binding.tvRating.visibility = View.VISIBLE
         } else {
             holder.binding.tvRating.visibility = View.GONE
+        }
+
+        // Author Info
+        val authorName = recipe.ownerName ?: "Anonymous"
+        holder.binding.tvAuthorName.text = authorName
+        
+        if (!recipe.ownerPhotoUrl.isNullOrBlank()) {
+            holder.binding.ivAuthorImage.isVisible = true
+            holder.binding.tvAuthorAvatar.isVisible = false
+            Glide.with(holder.itemView.context)
+                .load(recipe.ownerPhotoUrl)
+                .circleCrop()
+                .placeholder(R.drawable.bg_circle_orange)
+                .into(holder.binding.ivAuthorImage)
+        } else {
+            holder.binding.ivAuthorImage.isVisible = false
+            holder.binding.tvAuthorAvatar.isVisible = true
+            holder.binding.tvAuthorAvatar.text = authorName.firstOrNull()?.uppercaseChar()?.toString() ?: "U"
+        }
+        
+        holder.binding.authorContainer.setOnClickListener {
+            recipe.ownerId?.let { id -> onAuthorClick?.invoke(id) }
         }
 
         Glide.with(holder.itemView.context)

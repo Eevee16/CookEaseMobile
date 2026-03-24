@@ -103,6 +103,13 @@ class RecipeDetailFragment : Fragment() {
                 binding.tvAuthorAvatar.isVisible = true
             }
         }
+
+        viewModel.ownerName.observe(viewLifecycleOwner) { name ->
+            if (!name.isNullOrBlank()) {
+                binding.tvAuthorName.text = name
+                binding.tvAuthorAvatar.text = name.firstOrNull()?.uppercaseChar()?.toString() ?: "C"
+            }
+        }
     }
 
     private fun setupListeners() {
@@ -150,7 +157,11 @@ class RecipeDetailFragment : Fragment() {
         }
 
         binding.authorSection.setOnClickListener {
-            Snackbar.make(binding.root, "Author profile coming soon!", Snackbar.LENGTH_SHORT).show()
+            val recipe = (viewModel.state.value as? RecipeDetailState.Success)?.recipe
+            if (recipe?.ownerId != null) {
+                val action = RecipeDetailFragmentDirections.actionRecipeDetailToProfile(recipe.ownerId)
+                findNavController().navigate(action)
+            }
         }
     }
 
@@ -176,8 +187,12 @@ class RecipeDetailFragment : Fragment() {
         binding.tvCategoryLabel.text = "${recipe.cuisine ?: "World"} • ${recipe.category ?: "Main Course"}"
         binding.tvTitle.text = recipe.title
         
-        binding.tvAuthorAvatar.text = recipe.ownerName?.firstOrNull()?.uppercaseChar()?.toString() ?: "U"
-        binding.tvAuthorName.text = recipe.ownerName ?: "Anonymous"
+        // Initial author data from recipe object
+        if (viewModel.ownerName.value.isNullOrBlank()) {
+            val cleanedName = if (recipe.ownerName?.contains("@") == true) "Chef" else recipe.ownerName
+            binding.tvAuthorName.text = cleanedName ?: "Chef"
+            binding.tvAuthorAvatar.text = (cleanedName ?: "Chef").firstOrNull()?.uppercaseChar()?.toString() ?: "C"
+        }
 
         binding.tvDescription.text = recipe.description ?: ""
         binding.tvServings.text = (recipe.servings ?: 1).toString()

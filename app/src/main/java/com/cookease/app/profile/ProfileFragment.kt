@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.cookease.app.R
@@ -24,6 +25,7 @@ class ProfileFragment : Fragment() {
 
     private val profileViewModel: ProfileViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
+    private val args: ProfileFragmentArgs by navArgs()
 
     private lateinit var recipeAdapter: RecipeAdapter
 
@@ -45,7 +47,7 @@ class ProfileFragment : Fragment() {
         setupObservers()
         setupModeratorAccess()
 
-        profileViewModel.fetchUserData()
+        profileViewModel.fetchUserData(args.userId)
     }
 
     private fun setupRecyclerView() {
@@ -53,6 +55,16 @@ class ProfileFragment : Fragment() {
             onRecipeClick = { recipe ->
                 val action = ProfileFragmentDirections.actionProfileToRecipeDetail(recipe.id)
                 findNavController().navigate(action)
+            },
+            onAuthorClick = { userId ->
+                // If it's a different user, navigate to their profile
+                if (userId != profileViewModel.user.value?.id) {
+                    val action = ProfileFragmentDirections.actionProfileToRecipeDetail(userId)
+                    // Wait, this is Profile to RecipeDetail. I need Profile to Profile but it might be tricky with nav component if not defined.
+                    // Actually, if we are already on a profile, clicking the author again might just refresh?
+                    // For now, let's just do nothing or refresh if it's a different ID.
+                    profileViewModel.fetchUserData(userId)
+                }
             }
         )
         binding.rvUserRecipes.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -114,6 +126,7 @@ class ProfileFragment : Fragment() {
 
             binding.tvUserName.text = user.name.ifBlank { "User" }
             binding.tvUserEmail.text = user.email
+            binding.tvUserEmail.isVisible = user.email.isNotBlank()
 
             if (!user.photoUrl.isNullOrBlank()) {
                 binding.profileImage.isVisible = true
@@ -137,6 +150,22 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        profileViewModel.isCurrentUser.observe(viewLifecycleOwner) { isMine ->
+            binding.btnEditProfile.isVisible = isMine
+            binding.btnLogout.isVisible = isMine
+            binding.btnAddRecipe.isVisible = isMine
+            
+            // Hide tabs if not current user (only approved will be shown anyway)
+            binding.tabApproved.isVisible = isMine
+            binding.tabPending.isVisible = isMine
+            binding.tabRejected.isVisible = isMine
+            
+            if (!isMine) {
+                binding.tabAll.text = "Recipes"
+                setActiveTab("all")
+            }
+        }
+
         profileViewModel.role.observe(viewLifecycleOwner) { role ->
             if (!role.isNullOrBlank()) {
                 binding.tvRoleBadge.isVisible = true
@@ -156,10 +185,13 @@ class ProfileFragment : Fragment() {
             binding.tvPendingRecipes.text = stats.pending.toString()
             binding.tvRejectedRecipes.text = stats.rejected.toString()
 
-            binding.tabAll.text = "All (${stats.total})"
-            binding.tabApproved.text = "Approved (${stats.approved})"
-            binding.tabPending.text = "Pending (${stats.pending})"
-            binding.tabRejected.text = "Rejected (${stats.rejected})"
+            val isMine = profileViewModel.isCurrentUser.value ?: true
+            if (isMine) {
+                binding.tabAll.text = "All (${stats.total})"
+                binding.tabApproved.text = "Approved (${stats.approved})"
+                binding.tabPending.text = "Pending (${stats.pending})"
+                binding.tabRejected.text = "Rejected (${stats.rejected})"
+            }
         }
 
         profileViewModel.userRecipes.observe(viewLifecycleOwner) { recipes ->
@@ -167,6 +199,13 @@ class ProfileFragment : Fragment() {
             val isEmpty = recipes.isEmpty()
             binding.emptyState.isVisible = isEmpty
             binding.rvUserRecipes.isVisible = !isEmpty
+            
+            val isMine = profileViewModel.isCurrentUser.value ?: true
+            binding.tvEmptyMessage.text = if (isMine) {
+                "You haven't added any recipes yet."
+            } else {
+                "This user hasn't published any recipes yet."
+            }
         }
 
         profileViewModel.logoutResult.observe(viewLifecycleOwner) { success ->
@@ -177,7 +216,8 @@ class ProfileFragment : Fragment() {
     private fun setupModeratorAccess() {
         // Show/hide the whole card for moderators
         profileViewModel.role.observe(viewLifecycleOwner) { role ->
-            binding.cardModeratorSection.isVisible = role == "moderator" || role == "admin"
+            val isMine = profileViewModel.isCurrentUser.value ?: true
+            binding.cardModeratorSection.isVisible = isMine && (role == "moderator" || role == "admin")
         }
 
         binding.btnModeratorDashboard.setOnClickListener {

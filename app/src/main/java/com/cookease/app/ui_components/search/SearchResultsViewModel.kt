@@ -1,4 +1,4 @@
-package com.cookease.app.ui.search
+package com.cookease.app.ui_components.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,4 +1,4 @@
-package com.cookease.app.ui.search
+package com.cookease.app.ui_components.search
 
 import android.os.Bundle
 import android.text.Editable
@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
-import com.cookease.app.R
 import com.cookease.app.databinding.FragmentSearchIngredientsBinding
 import com.cookease.app.ui_components.recipe.RecipeAdapter
 
@@ -42,7 +42,6 @@ class SearchIngredientsFragment : Fragment() {
         setupAdapters()
         setupObservers()
         setupListeners()
-        // fetchData() is called in ViewModel init, but we can call it again if needed
         viewModel.fetchData()
     }
 
@@ -53,7 +52,16 @@ class SearchIngredientsFragment : Fragment() {
         binding.rvIngredients.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.rvIngredients.adapter = ingredientAdapter
 
-        recipeAdapter = RecipeAdapter(onRecipeClick = { _ -> /* handle recipe click if needed */ })
+        recipeAdapter = RecipeAdapter(
+            onRecipeClick = { recipe ->
+                val action = SearchIngredientsFragmentDirections.actionSearchIngredientsToRecipeDetail(recipe.id)
+                findNavController().navigate(action)
+            },
+            onAuthorClick = { userId ->
+                val action = SearchIngredientsFragmentDirections.actionSearchIngredientsToProfile(userId)
+                findNavController().navigate(action)
+            }
+        )
         binding.rvRecipes.layoutManager = LinearLayoutManager(requireContext())
         binding.rvRecipes.adapter = recipeAdapter
     }
@@ -102,7 +110,6 @@ class SearchIngredientsFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        // Keep real-time filtering but also add the button for a definite action
         binding.etIngredientSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) =
                 viewModel.filterIngredients(s?.toString() ?: "")
@@ -110,14 +117,13 @@ class SearchIngredientsFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // Explicit search button listener
         binding.btnSearchIngredients.setOnClickListener {
             viewModel.filterIngredients(binding.etIngredientSearch.text.toString())
         }
 
-        binding.tvClearAll.setOnClickListener { 
+        binding.tvClearAll.setOnClickListener {
             binding.etIngredientSearch.setText("")
-            viewModel.clearAll() 
+            viewModel.clearAll()
         }
     }
 

@@ -5,7 +5,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
-    <!-- Global Actions - Can be called from any fragment -->
+    <!-- Global Actions -->
     <action
         android:id="@+id/action_global_homeFragment"
         app:destination="@id/nav_home"
@@ -83,6 +83,9 @@
         <action
             android:id="@+id/action_home_to_searchIngredients"
             app:destination="@id/searchIngredientsFragment"/>
+        <action
+            android:id="@+id/action_home_to_profile"
+            app:destination="@id/nav_profile" />
     </fragment>
 
     <fragment
@@ -102,11 +105,14 @@
         <action
             android:id="@+id/action_search_to_recipeDetail"
             app:destination="@id/recipeDetailFragment"/>
+        <action
+            android:id="@+id/action_search_to_profile"
+            app:destination="@id/nav_profile" />
     </fragment>
 
     <fragment
         android:id="@+id/searchResultsFragment"
-        android:name="com.cookease.app.ui.search.SearchResultsFragment"
+        android:name="com.cookease.app.ui_components.search.SearchResultsFragment"
         android:label="Search Results"
         tools:layout="@layout/fragment_search_results">
         <argument
@@ -116,26 +122,35 @@
         <action
             android:id="@+id/action_searchResults_to_recipeDetail"
             app:destination="@id/recipeDetailFragment"/>
+        <action
+            android:id="@+id/action_searchResults_to_profile"
+            app:destination="@id/nav_profile" />
     </fragment>
 
     <fragment
         android:id="@+id/searchCourseCuisineFragment"
-        android:name="com.cookease.app.ui.search.SearchCourseCuisineFragment"
+        android:name="com.cookease.app.ui_components.search.SearchCourseCuisineFragment"
         android:label="Search by Category"
         tools:layout="@layout/fragment_search_course_cuisine">
         <action
             android:id="@+id/action_searchCourseCuisine_to_recipeDetail"
             app:destination="@id/recipeDetailFragment"/>
+        <action
+            android:id="@+id/action_searchCourseCuisine_to_profile"
+            app:destination="@id/nav_profile" />
     </fragment>
 
     <fragment
         android:id="@+id/searchIngredientsFragment"
-        android:name="com.cookease.app.ui.search.SearchIngredientsFragment"
+        android:name="com.cookease.app.ui_components.search.SearchIngredientsFragment"
         android:label="Search by Ingredients"
         tools:layout="@layout/fragment_search_ingredients">
         <action
             android:id="@+id/action_searchIngredients_to_recipeDetail"
             app:destination="@id/recipeDetailFragment"/>
+        <action
+            android:id="@+id/action_searchIngredients_to_profile"
+            app:destination="@id/nav_profile" />
     </fragment>
 
     <fragment
@@ -149,6 +164,9 @@
         <action
             android:id="@+id/action_recipeDetail_to_editRecipe"
             app:destination="@id/editRecipeFragment"/>
+        <action
+            android:id="@+id/action_recipeDetail_to_profile"
+            app:destination="@id/nav_profile" />
     </fragment>
 
     <fragment
@@ -180,6 +198,9 @@
         <action
             android:id="@+id/action_saved_to_recipeDetail"
             app:destination="@id/recipeDetailFragment"/>
+        <action
+            android:id="@+id/action_saved_to_profile"
+            app:destination="@id/nav_profile" />
     </fragment>
 
     <fragment
@@ -187,6 +208,11 @@
         android:name="com.cookease.app.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile">
+        <argument
+            android:name="userId"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
         <action
             android:id="@+id/action_profile_to_recipeDetail"
             app:destination="@id/recipeDetailFragment"/>

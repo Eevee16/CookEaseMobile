@@ -49,6 +49,8 @@ data class Recipe(
     val ownerId: String? = null,
     @SerialName("owner_name")
     val ownerName: String? = null,
+    @SerialName("owner_photo_url")
+    val ownerPhotoUrl: String? = null,
     val status: String? = "pending",
     @SerialName("rejection_reason")
     val rejectionReason: String? = null,

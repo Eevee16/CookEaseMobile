@@ -1,4 +1,4 @@
-package com.cookease.app.ui.search
+package com.cookease.app.ui_components.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -30,7 +30,6 @@ class IngredientCardAdapter(
         holder.binding.tvIngredientName.text = ingredient.name
         holder.binding.selectedOverlay.isVisible = isSelected
 
-        // Use Coil for better consistency with other parts of the app
         holder.binding.imgIngredient.load(ingredient.image_url?.takeIf { it.isNotEmpty() }) {
             placeholder(R.drawable.ic_ingredient_placeholder)
             error(R.drawable.ic_ingredient_placeholder)

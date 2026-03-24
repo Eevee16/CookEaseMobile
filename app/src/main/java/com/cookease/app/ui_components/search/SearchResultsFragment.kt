@@ -1,4 +1,4 @@
-package com.cookease.app.ui.search
+package com.cookease.app.ui_components.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -41,6 +41,10 @@ class SearchResultsFragment : Fragment() {
         recipeAdapter = RecipeAdapter(
             onRecipeClick = { recipe ->
                 val action = SearchResultsFragmentDirections.actionSearchResultsToRecipeDetail(recipe.id)
+                findNavController().navigate(action)
+            },
+            onAuthorClick = { userId ->
+                val action = SearchResultsFragmentDirections.actionSearchResultsToProfile(userId)
                 findNavController().navigate(action)
             }
         )

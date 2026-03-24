@@ -36,6 +36,9 @@ class RecipeDetailViewModel(
     private val _ownerPhotoUrl = MutableLiveData<String?>(null)
     val ownerPhotoUrl: LiveData<String?> = _ownerPhotoUrl
 
+    private val _ownerName = MutableLiveData<String?>(null)
+    val ownerName: LiveData<String?> = _ownerName
+
     private val _servingsMultiplier = MutableLiveData(1.0f)
     val servingsMultiplier: LiveData<Float> = _servingsMultiplier
 
@@ -66,8 +69,23 @@ class RecipeDetailViewModel(
                     .select { filter { eq("id", ownerId) } }
                     .decodeSingleOrNull<Map<String, kotlinx.serialization.json.JsonElement>>()
                 
-                val photoUrl = profile?.get("photo_url")?.jsonPrimitive?.content
-                _ownerPhotoUrl.postValue(photoUrl)
+                if (profile != null) {
+                    val photoUrl = profile["photo_url"]?.jsonPrimitive?.content
+                    _ownerPhotoUrl.postValue(photoUrl)
+
+                    val firstName = profile["first_name"]?.jsonPrimitive?.content ?: ""
+                    val lastName = profile["last_name"]?.jsonPrimitive?.content ?: ""
+                    val customName = profile["name"]?.jsonPrimitive?.content
+                    
+                    val firstLast = "$firstName $lastName".trim()
+                    val fullName = if (!customName.isNullOrBlank()) customName else firstLast
+                    
+                    if (fullName.isNotBlank()) {
+                        _ownerName.postValue(fullName)
+                    } else {
+                        // If no name info, don't update _ownerName, let UI use recipe.ownerName or fallback
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

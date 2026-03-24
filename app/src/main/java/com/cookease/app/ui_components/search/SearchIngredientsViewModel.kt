@@ -1,4 +1,4 @@
-package com.cookease.app.ui.search
+package com.cookease.app.ui_components.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -41,20 +41,16 @@ class SearchIngredientsViewModel(private val supabase: io.github.jan.supabase.Su
         _loading.value = true
         viewModelScope.launch {
             try {
-                // 1. Fetch Ingredients
                 val ingredients = supabase.postgrest["ingredients"]
                     .select()
                     .decodeList<IngredientItem>()
                     .sortedBy { it.name }
-                
                 _allIngredients.value = ingredients
-                // Immediately populate filtered list so they show up before searching
                 filterIngredients(currentSearchQuery)
 
-                // 2. Fetch Approved Recipes
                 val recipes = supabase.postgrest["recipes"]
                     .select {
-                        filter { 
+                        filter {
                             or {
                                 eq("status", "approved")
                                 eq("status", "done")
@@ -62,7 +58,6 @@ class SearchIngredientsViewModel(private val supabase: io.github.jan.supabase.Su
                         }
                     }
                     .decodeList<Recipe>()
-                
                 _allRecipes.value = recipes
                 applyIngredientFilter()
             } catch (e: Exception) {
@@ -77,8 +72,6 @@ class SearchIngredientsViewModel(private val supabase: io.github.jan.supabase.Su
         currentSearchQuery = query
         val all = _allIngredients.value ?: emptyList()
         val selected = _selectedIngredients.value ?: emptySet()
-        
-        // Show all unselected ingredients if query is blank, otherwise filter
         _filteredIngredients.value = if (query.isBlank()) {
             all.filter { it.name !in selected }
         } else {
@@ -88,11 +81,8 @@ class SearchIngredientsViewModel(private val supabase: io.github.jan.supabase.Su
 
     fun toggleIngredient(ingredientName: String) {
         val current = _selectedIngredients.value?.toMutableSet() ?: mutableSetOf()
-        if (current.contains(ingredientName)) {
-            current.remove(ingredientName)
-        } else {
-            current.add(ingredientName)
-        }
+        if (current.contains(ingredientName)) current.remove(ingredientName)
+        else current.add(ingredientName)
         _selectedIngredients.value = current
         filterIngredients(currentSearchQuery)
         applyIngredientFilter()
@@ -107,17 +97,13 @@ class SearchIngredientsViewModel(private val supabase: io.github.jan.supabase.Su
     private fun applyIngredientFilter() {
         val selected = _selectedIngredients.value ?: emptySet()
         val recipes = _allRecipes.value ?: emptyList()
-
         if (selected.isEmpty()) {
             _filteredRecipes.value = recipes
             return
         }
-
         _filteredRecipes.value = recipes.filter { recipe ->
             selected.all { sel ->
-                recipe.ingredients.any { ing -> 
-                    ing.contains(sel, ignoreCase = true)
-                }
+                recipe.ingredients.any { ing -> ing.contains(sel, ignoreCase = true) }
             }
         }
     }

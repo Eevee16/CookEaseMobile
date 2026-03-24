@@ -55,6 +55,10 @@ class SavedFragment : Fragment() {
                 val action = SavedFragmentDirections.actionSavedToRecipeDetail(recipe.id)
                 findNavController().navigate(action)
             },
+            onAuthorClick = { userId ->
+                val action = SavedFragmentDirections.actionSavedToProfile(userId)
+                findNavController().navigate(action)
+            },
             onRemoveClick = { recipe ->
                 viewModel.removeFromSaved(recipe.id)
             },
